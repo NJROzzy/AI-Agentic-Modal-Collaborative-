@@ -1,0 +1,38 @@
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# Python cache/compiled files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# VS Code settings (optional - remove if you want to share workspace settings)
+.vscode/
+
+# macOS system files
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Environment variables (if you ever add API keys, secrets, etc.)
+.env
+.env.local
+
+# Distribution / packaging
+build/
+dist/
+*.egg-info/
+
+# Model checkpoints / large files (add as needed once you start training)
+*.pt
+*.pth
+*.ckpt
+
+# Logs
+*.log
