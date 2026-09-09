@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Wild World of AI, ML &amp; DL</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap');
+
+  :root {
+    --bg: #14152B;
+    --panel: #1C1E3A;
+    --panel-2: #232748;
+    --line: #34386A;
+    --lime: #C6F135;
+    --coral: #FF6F59;
+    --sky: #6FD6FF;
+    --text: #EDEEFB;
+    --muted: #9497C4;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  h1, h2, h3 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+
+  .mono { font-family: 'IBM Plex Mono', monospace; }
+
+  .wrap {
+    max-width: 1040px;
+    margin: 0 auto;
+    padding: 0 32px;
+  }
+
+  /* ---------- HERO ---------- */
+  .hero {
+    padding: 110px 0 90px;
+    text-align: center;
+    position: relative;
+    border-bottom: 1px solid var(--line);
+    overflow: hidden;
+  }
+
+  .hero .blob {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(70px);
+    opacity: 0.35;
+    z-index: 0;
+  }
+  .blob.one { width: 340px; height: 340px; background: var(--lime); top: -120px; left: -80px; }
+  .blob.two { width: 300px; height: 300px; background: var(--coral); top: -80px; right: -100px; }
+
+  .hero .wrap { position: relative; z-index: 1; }
+
+  .hero h1 {
+    font-size: clamp(2.4rem, 6vw, 4rem);
+    line-height: 1.08;
+    margin: 0 auto 24px;
+    max-width: 16ch;
+  }
+
+  .hero h1 .accent { color: var(--lime); }
+
+  .hero p.lede {
+    font-size: 1.15rem;
+    color: var(--muted);
+    max-width: 52ch;
+    margin: 0 auto;
+  }
+
+  /* ---------- SECTION ---------- */
+  .section {
+    padding: 80px 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .section-head {
+    margin-bottom: 44px;
+    max-width: 62ch;
+  }
+
+  .section-head h2 { font-size: 1.9rem; margin-bottom: 12px; }
+  .section-head p { color: var(--muted); font-size: 1.02rem; }
+
+  /* ---------- PROJECT GRID ---------- */
+  .project-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+
+  @media (max-width: 700px) { .project-grid { grid-template-columns: 1fr; } }
+
+  .project-card {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 28px;
+    position: relative;
+  }
+
+  .project-card .tag {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--bg);
+    background: var(--lime);
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 20px;
+    margin-bottom: 16px;
+  }
+
+  .project-card:nth-child(2) .tag { background: var(--coral); }
+  .project-card:nth-child(3) .tag { background: var(--sky); }
+  .project-card:nth-child(4) .tag { background: var(--lime); }
+  .project-card:nth-child(5) .tag { background: var(--coral); }
+  .project-card:nth-child(6) .tag { background: var(--sky); }
+
+  .project-card h3 { font-size: 1.15rem; margin-bottom: 10px; }
+  .project-card p { color: var(--muted); font-size: 0.95rem; }
+
+  /* ---------- CONCEPTS ---------- */
+  .concept-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .concept {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    padding: 16px 20px;
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    flex: 1 1 260px;
+  }
+
+  .concept .glyph {
+    font-family: 'IBM Plex Mono', monospace;
+    color: var(--lime);
+    font-size: 0.85rem;
+  }
+
+  .concept p { color: var(--muted); font-size: 0.9rem; margin: 0; }
+  .concept strong { color: var(--text); font-weight: 600; }
+
+  /* ---------- JOKES ---------- */
+  .jokes {
+    padding: 80px 0 100px;
+  }
+
+  .joke-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    background: var(--line);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    overflow: hidden;
+  }
+
+  .joke {
+    background: var(--panel);
+    padding: 26px 30px;
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+  }
+
+  .joke .num {
+    font-family: 'IBM Plex Mono', monospace;
+    color: var(--muted);
+    font-size: 0.85rem;
+    flex-shrink: 0;
+    padding-top: 3px;
+  }
+
+  .joke p {
+    font-size: 1.02rem;
+  }
+
+  .joke .punch {
+    color: var(--lime);
+    font-weight: 600;
+  }
+
+  /* ---------- FOOTER ---------- */
+  footer {
+    padding: 40px 0 60px;
+    text-align: center;
+  }
+
+  footer p {
+    color: var(--muted);
+    font-size: 0.88rem;
+  }
+</style>
+</head>
+<body>
+
+<section class="hero">
+  <div class="blob one"></div>
+  <div class="blob two"></div>
+  <div class="wrap">
+    <h1>Machines are learning. <span class="accent">Some of them faster than us.</span></h1>
+    <p class="lede">A quick, fun tour of what's actually happening across AI, machine learning, and deep learning right now — and why it's one of the strangest, most exciting times to be poking around in this field.</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <div class="section-head">
+      <h2>Things currently blowing people's minds</h2>
+      <p>A grab-bag of the kind of stuff modern AI/ML/DL systems are doing out in the world right now.</p>
+    </div>
+    <div class="project-grid">
+      <div class="project-card">
+        <span class="tag">generative</span>
+        <h3>Text-to-image &amp; text-to-video models</h3>
+        <p>Type a sentence, get a photorealistic scene or a short video clip. The gap between "describe it" and "see it" keeps shrinking.</p>
+      </div>
+      <div class="project-card">
+        <span class="tag">science</span>
+        <h3>Protein structure prediction</h3>
+        <p>Deep learning models can predict how a protein folds — a problem biologists spent decades chipping away at by hand.</p>
+      </div>
+      <div class="project-card">
+        <span class="tag">robotics</span>
+        <h3>Robots that learn by watching</h3>
+        <p>Instead of being hand-programmed for every motion, robots are increasingly trained on demonstrations and simulation, then fine-tuned in the real world.</p>
+      </div>
+      <div class="project-card">
+        <span class="tag">agents</span>
+        <h3>Agents that use tools on their own</h3>
+        <p>Modern AI agents can browse, run code, call APIs, and chain multi-step tasks together — moving from "answer a question" to "go get it done."</p>
+      </div>
+      <div class="project-card">
+        <span class="tag">audio</span>
+        <h3>Real-time voice &amp; music generation</h3>
+        <p>Models can now clone a voice, generate a melody, or hold a spoken conversation with latency low enough to feel natural.</p>
+      </div>
+      <div class="project-card">
+        <span class="tag">code</span>
+        <h3>AI pair programmers</h3>
+        <p>Autocomplete evolved into full collaborators — reading a codebase, writing tests, and shipping features alongside human developers.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" style="border-bottom: none;">
+  <div class="wrap">
+    <div class="section-head">
+      <h2>The vocabulary, quickly</h2>
+      <p>The words that hold this whole field together, in plain terms.</p>
+    </div>
+    <div class="concept-row">
+      <div class="concept">
+        <span class="glyph">∇</span>
+        <p><strong>Gradient</strong> — which direction to nudge the model so it gets a little less wrong.</p>
+      </div>
+      <div class="concept">
+        <span class="glyph">⊗</span>
+        <p><strong>Tensor</strong> — a fancy word for "a grid of numbers," at any number of dimensions.</p>
+      </div>
+      <div class="concept">
+        <span class="glyph">⟳</span>
+        <p><strong>Backpropagation</strong> — how the network figures out who's to blame for a mistake.</p>
+      </div>
+      <div class="concept">
+        <span class="glyph">Σ</span>
+        <p><strong>Loss function</strong> — a single number that says exactly how bad today was.</p>
+      </div>
+      <div class="concept">
+        <span class="glyph">⇄</span>
+        <p><strong>Transformer</strong> — the architecture that made models pay attention to the right things.</p>
+      </div>
+      <div class="concept">
+        <span class="glyph">△</span>
+        <p><strong>Agent</strong> — a model that doesn't just answer, but decides what to do next.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="jokes">
+  <div class="wrap">
+    <div class="section-head">
+      <h2>Okay, a few jokes</h2>
+      <p>Because if you can't laugh at your own loss curve, what are you even doing.</p>
+    </div>
+    <div class="joke-list">
+      <div class="joke">
+        <span class="num mono">01</span>
+        <p>Why did the neural network go to therapy? <span class="punch">Too much unresolved gradient descent.</span></p>
+      </div>
+      <div class="joke">
+        <span class="num mono">02</span>
+        <p>My model finally stopped overfitting. <span class="punch">Turns out it just stopped trying entirely.</span></p>
+      </div>
+      <div class="joke">
+        <span class="num mono">03</span>
+        <p>What's an AI's favorite type of music? <span class="punch">Anything with a good bassline — it loves back propagation.</span></p>
+      </div>
+      <div class="joke">
+        <span class="num mono">04</span>
+        <p>I asked the chatbot if it dreams. <span class="punch">It said only during batch inference.</span></p>
+      </div>
+      <div class="joke">
+        <span class="num mono">05</span>
+        <p>How do you comfort a sad tensor? <span class="punch">You reassure it — everything will reshape itself eventually.</span></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <p>Built for the fun of it — AI, ML, and DL are moving fast, and this page barely scratches the surface.</p>
+  </div>
+</footer>
+
+</body>
+</html>
