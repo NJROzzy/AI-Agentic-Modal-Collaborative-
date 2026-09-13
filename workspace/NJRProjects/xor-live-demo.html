@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Watch It Learn — XOR</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap');
+
+  :root {
+    --ink: #0E1013;
+    --panel: #171B21;
+    --panel-2: #1D222A;
+    --line: #2A303A;
+    --teal: #57E1C4;
+    --amber: #F0A857;
+    --text: #E8EAF0;
+    --muted: #7C8494;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--ink);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    padding: 40px 24px 60px;
+  }
+
+  h1, h2 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+
+  .mono { font-family: 'IBM Plex Mono', monospace; }
+
+  .wrap {
+    max-width: 980px;
+    margin: 0 auto;
+  }
+
+  header {
+    margin-bottom: 32px;
+  }
+
+  header h1 {
+    font-size: 1.9rem;
+    margin-bottom: 8px;
+  }
+
+  header p {
+    color: var(--muted);
+    font-size: 1rem;
+    max-width: 60ch;
+  }
+
+  /* ---------- CONTROLS ---------- */
+  .controls {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 16px 20px;
+    margin-bottom: 24px;
+  }
+
+  .mode-toggle {
+    display: flex;
+    background: var(--panel-2);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  .mode-btn {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.8rem;
+    padding: 9px 14px;
+    background: transparent;
+    color: var(--muted);
+    border: none;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .mode-btn.active {
+    background: var(--teal);
+    color: var(--ink);
+    font-weight: 500;
+  }
+
+  button.action {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.8rem;
+    padding: 9px 16px;
+    background: var(--panel-2);
+    border: 1px solid var(--line);
+    color: var(--text);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  button.action:hover { border-color: var(--teal); color: var(--teal); }
+
+  button.action.primary {
+    background: var(--teal);
+    color: var(--ink);
+    border-color: var(--teal);
+    font-weight: 500;
+  }
+
+  .speed-control {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-left: auto;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.78rem;
+    color: var(--muted);
+  }
+
+  input[type="range"] {
+    accent-color: var(--teal);
+    width: 120px;
+  }
+
+  /* ---------- STATUS BAR ---------- */
+  .status-bar {
+    display: flex;
+    gap: 24px;
+    flex-wrap: wrap;
+    margin-bottom: 24px;
+    padding: 16px 20px;
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+  }
+
+  .status-item .label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 4px;
+  }
+
+  .status-item .value {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 1.3rem;
+    font-weight: 600;
+  }
+
+  .status-item .value.teal { color: var(--teal); }
+  .status-item .value.amber { color: var(--amber); }
+
+  /* ---------- MAIN GRID ---------- */
+  .grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 24px;
+  }
+
+  @media (max-width: 800px) {
+    .grid { grid-template-columns: 1fr; }
+  }
+
+  .panel {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 20px;
+  }
+
+  .panel h2 {
+    font-size: 1rem;
+    margin-bottom: 4px;
+  }
+
+  .panel .sub {
+    color: var(--muted);
+    font-size: 0.82rem;
+    margin-bottom: 14px;
+  }
+
+  canvas {
+    width: 100%;
+    display: block;
+    border-radius: 8px;
+  }
+
+  /* ---------- PREDICTIONS TABLE ---------- */
+  .pred-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.85rem;
+  }
+
+  .pred-table th {
+    text-align: left;
+    color: var(--muted);
+    font-weight: 500;
+    padding: 8px 10px;
+    border-bottom: 1px solid var(--line);
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  .pred-table td {
+    padding: 10px;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .pred-table tr:last-child td { border-bottom: none; }
+
+  .correct { color: var(--teal); }
+  .incorrect { color: var(--amber); }
+
+  footer {
+    text-align: center;
+    color: var(--muted);
+    font-size: 0.85rem;
+    margin-top: 12px;
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header>
+    <h1>Watch It Learn — XOR</h1>
+    <p>A single neuron can only draw one straight line. Watch it try, fail, and then watch a 2-layer network bend the line into something that actually works.</p>
+  </header>
+
+  <div class="controls">
+    <div class="mode-toggle">
+      <button class="mode-btn active" data-mode="single">Single Neuron</button>
+      <button class="mode-btn" data-mode="multi">2-Layer Network</button>
+    </div>
+    <button class="action primary" id="playBtn">Play</button>
+    <button class="action" id="resetBtn">Reset</button>
+    <div class="speed-control">
+      <span>speed</span>
+      <input type="range" id="speedSlider" min="1" max="40" value="8">
+    </div>
+  </div>
+
+  <div class="status-bar">
+    <div class="status-item">
+      <div class="label">Epoch</div>
+      <div class="value mono" id="epochVal">0</div>
+    </div>
+    <div class="status-item">
+      <div class="label">Loss</div>
+      <div class="value mono teal" id="lossVal">0.0000</div>
+    </div>
+    <div class="status-item">
+      <div class="label">Status</div>
+      <div class="value mono" id="statusVal" style="font-size:1rem; padding-top:6px;">Paused</div>
+    </div>
+  </div>
+
+  <div class="grid">
+    <div class="panel">
+      <h2>Decision Boundary</h2>
+      <div class="sub">Background color = what the network predicts across the whole input space</div>
+      <canvas id="boundaryCanvas" width="440" height="440"></canvas>
+    </div>
+    <div class="panel">
+      <h2>Loss Curve</h2>
+      <div class="sub">Should drop toward zero — or plateau, if the model has hit its ceiling</div>
+      <canvas id="lossCanvas" width="440" height="440"></canvas>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h2>Live Predictions</h2>
+    <div class="sub">Rounded predictions vs. actual XOR truth table</div>
+    <table class="pred-table">
+      <thead>
+        <tr><th>Input</th><th>Predicted</th><th>Rounded</th><th>Actual</th><th>Match</th></tr>
+      </thead>
+      <tbody id="predBody"></tbody>
+    </table>
+  </div>
+
+  <footer>Genesis — NJRProjects · gradient descent, live, in your browser</footer>
+</div>
+
+<script>
+// ---------- Data ----------
+const X = [[0,0],[0,1],[1,0],[1,1]];
+const Y = [0,1,1,0];
+const LR_SINGLE = 0.5;
+const LR_MULTI = 1.0;
+const HIDDEN = 4;
+
+function sigmoid(z) { return 1 / (1 + Math.exp(-z)); }
+
+// ---------- Single neuron model ----------
+function makeSingle() {
+  return { w1: randn(), w2: randn(), b: randn() };
+}
+function forwardSingle(m, x1, x2) {
+  const z = m.w1*x1 + m.w2*x2 + m.b;
+  return sigmoid(z);
+}
+function trainEpochSingle(m) {
+  let dw1=0, dw2=0, db=0, loss=0;
+  const n = X.length;
+  for (let i=0;i<n;i++) {
+    const [x1,x2] = X[i];
+    const y = Y[i];
+    const a = forwardSingle(m, x1, x2);
+    loss += (y-a)*(y-a);
+    const dLda = (2/n)*(a-y);
+    const dadz = a*(1-a);
+    const dz = dLda*dadz;
+    dw1 += dz*x1;
+    dw2 += dz*x2;
+    db += dz;
+  }
+  m.w1 -= LR_SINGLE*dw1;
+  m.w2 -= LR_SINGLE*dw2;
+  m.b  -= LR_SINGLE*db;
+  return loss/n;
+}
+
+// ---------- 2-layer model ----------
+function makeMulti() {
+  const W1 = [], b1 = [];
+  for (let h=0; h<HIDDEN; h++) { W1.push([randn(), randn()]); b1.push(randn()); }
+  const W2 = []; for (let h=0; h<HIDDEN; h++) W2.push(randn());
+  const b2 = randn();
+  return { W1, b1, W2, b2 };
+}
+function forwardMulti(m, x1, x2) {
+  const a1 = [];
+  for (let h=0; h<HIDDEN; h++) {
+    const z1 = m.W1[h][0]*x1 + m.W1[h][1]*x2 + m.b1[h];
+    a1.push(sigmoid(z1));
+  }
+  let z2 = m.b2;
+  for (let h=0; h<HIDDEN; h++) z2 += m.W2[h]*a1[h];
+  const a2 = sigmoid(z2);
+  return { a1, a2 };
+}
+function trainEpochMulti(m) {
+  const n = X.length;
+  const dW1 = m.W1.map(row => [0,0]);
+  const db1 = m.b1.map(() => 0);
+  const dW2 = m.W2.map(() => 0);
+  let db2 = 0;
+  let loss = 0;
+
+  for (let i=0;i<n;i++) {
+    const [x1,x2] = X[i];
+    const y = Y[i];
+    const { a1, a2 } = forwardMulti(m, x1, x2);
+    loss += (y-a2)*(y-a2);
+
+    const dLda2 = (2/n)*(a2-y);
+    const da2dz2 = a2*(1-a2);
+    const dz2 = dLda2*da2dz2;
+
+    for (let h=0; h<HIDDEN; h++) {
+      dW2[h] += dz2 * a1[h];
+    }
+    db2 += dz2;
+
+    for (let h=0; h<HIDDEN; h++) {
+      const da1 = dz2 * m.W2[h];
+      const dz1 = da1 * a1[h]*(1-a1[h]);
+      dW1[h][0] += dz1 * x1;
+      dW1[h][1] += dz1 * x2;
+      db1[h] += dz1;
+    }
+  }
+
+  for (let h=0; h<HIDDEN; h++) {
+    m.W1[h][0] -= LR_MULTI*dW1[h][0];
+    m.W1[h][1] -= LR_MULTI*dW1[h][1];
+    m.b1[h]    -= LR_MULTI*db1[h];
+    m.W2[h]    -= LR_MULTI*dW2[h];
+  }
+  m.b2 -= LR_MULTI*db2;
+
+  return loss/n;
+}
+
+function randn() {
+  // Box-Muller, scaled down a bit for stable start
+  let u=0,v=0;
+  while(u===0) u=Math.random();
+  while(v===0) v=Math.random();
+  return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v) * 0.8;
+}
+
+// ---------- State ----------
+let mode = 'single';
+let model = makeSingle();
+let epoch = 0;
+let lossHistory = [];
+let playing = false;
+let lastLoss = 0;
+
+const boundaryCanvas = document.getElementById('boundaryCanvas');
+const bctx = boundaryCanvas.getContext('2d');
+const lossCanvas = document.getElementById('lossCanvas');
+const lctx = lossCanvas.getContext('2d');
+
+function predict(x1,x2) {
+  if (mode === 'single') return forwardSingle(model, x1, x2);
+  return forwardMulti(model, x1, x2).a2;
+}
+
+function trainEpoch() {
+  if (mode === 'single') return trainEpochSingle(model);
+  return trainEpochMulti(model);
+}
+
+function resetAll() {
+  model = mode === 'single' ? makeSingle() : makeMulti();
+  epoch = 0;
+  lossHistory = [];
+  lastLoss = 0;
+  drawAll();
+  document.getElementById('epochVal').textContent = '0';
+  document.getElementById('lossVal').textContent = '0.0000';
+}
+
+function colorForValue(v) {
+  // interpolate between amber (0) and teal (1)
+  const amber = [240,168,87];
+  const teal = [87,225,196];
+  const r = amber[0] + (teal[0]-amber[0])*v;
+  const g = amber[1] + (teal[1]-amber[1])*v;
+  const b = amber[2] + (teal[2]-amber[2])*v;
+  return `rgb(${r|0},${g|0},${b|0})`;
+}
+
+function drawBoundary() {
+  const W = boundaryCanvas.width, H = boundaryCanvas.height;
+  const res = 40;
+  const cell = W/res;
+  for (let i=0;i<res;i++) {
+    for (let j=0;j<res;j++) {
+      const x1 = i/(res-1);
+      const x2 = 1 - j/(res-1);
+      const v = predict(x1,x2);
+      bctx.fillStyle = colorForValue(v);
+      bctx.globalAlpha = 0.55;
+      bctx.fillRect(i*cell, j*cell, cell+1, cell+1);
+    }
+  }
+  bctx.globalAlpha = 1;
+
+  // draw the 4 XOR points
+  const pts = [[0,0,0],[0,1,1],[1,0,1],[1,1,0]];
+  pts.forEach(([x1,x2,y]) => {
+    const px = x1*W;
+    const py = (1-x2)*H;
+    bctx.beginPath();
+    bctx.arc(px, py, 14, 0, Math.PI*2);
+    bctx.fillStyle = y===1 ? '#57E1C4' : '#F0A857';
+    bctx.fill();
+    bctx.lineWidth = 2;
+    bctx.strokeStyle = '#0E1013';
+    bctx.stroke();
+    bctx.fillStyle = '#0E1013';
+    bctx.font = '600 12px IBM Plex Mono';
+    bctx.textAlign = 'center';
+    bctx.textBaseline = 'middle';
+    bctx.fillText(y, px, py+1);
+  });
+}
+
+function drawLossCurve() {
+  const W = lossCanvas.width, H = lossCanvas.height;
+  lctx.clearRect(0,0,W,H);
+  lctx.fillStyle = '#171B21';
+  lctx.fillRect(0,0,W,H);
+
+  // gridlines
+  lctx.strokeStyle = '#2A303A';
+  lctx.lineWidth = 1;
+  for (let g=0; g<=4; g++) {
+    const y = (H/4)*g;
+    lctx.beginPath();
+    lctx.moveTo(0,y);
+    lctx.lineTo(W,y);
+    lctx.stroke();
+  }
+
+  if (lossHistory.length < 2) return;
+
+  const maxPoints = 600;
+  const start = Math.max(0, lossHistory.length - maxPoints);
+  const visible = lossHistory.slice(start);
+  const maxLoss = 0.3;
+
+  lctx.beginPath();
+  lctx.strokeStyle = '#57E1C4';
+  lctx.lineWidth = 2.5;
+  visible.forEach((l, idx) => {
+    const x = (idx/(maxPoints-1)) * W;
+    const y = H - (Math.min(l, maxLoss)/maxLoss) * H;
+    if (idx===0) lctx.moveTo(x,y); else lctx.lineTo(x,y);
+  });
+  lctx.stroke();
+
+  // current point marker
+  const lastX = ((visible.length-1)/(maxPoints-1)) * W;
+  const lastY = H - (Math.min(visible[visible.length-1], maxLoss)/maxLoss) * H;
+  lctx.beginPath();
+  lctx.arc(lastX, lastY, 5, 0, Math.PI*2);
+  lctx.fillStyle = '#F0A857';
+  lctx.fill();
+}
+
+function updatePredTable() {
+  const body = document.getElementById('predBody');
+  body.innerHTML = '';
+  X.forEach(([x1,x2], i) => {
+    const v = predict(x1,x2);
+    const rounded = Math.round(v);
+    const match = rounded === Y[i];
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>(${x1}, ${x2})</td>
+      <td>${v.toFixed(3)}</td>
+      <td>${rounded}</td>
+      <td>${Y[i]}</td>
+      <td class="${match ? 'correct' : 'incorrect'}">${match ? 'match' : 'off'}</td>
+    `;
+    body.appendChild(tr);
+  });
+}
+
+function drawAll() {
+  drawBoundary();
+  drawLossCurve();
+  updatePredTable();
+}
+
+// ---------- Animation loop ----------
+let rafId = null;
+function loop() {
+  if (!playing) return;
+  const speed = parseInt(document.getElementById('speedSlider').value, 10);
+  let l = lastLoss;
+  for (let s=0; s<speed; s++) {
+    l = trainEpoch();
+    epoch++;
+    lossHistory.push(l);
+  }
+  lastLoss = l;
+  document.getElementById('epochVal').textContent = epoch;
+  document.getElementById('lossVal').textContent = l.toFixed(4);
+  drawAll();
+  rafId = requestAnimationFrame(loop);
+}
+
+document.getElementById('playBtn').addEventListener('click', () => {
+  playing = !playing;
+  document.getElementById('playBtn').textContent = playing ? 'Pause' : 'Play';
+  document.getElementById('statusVal').textContent = playing ? 'Training…' : 'Paused';
+  if (playing) loop();
+});
+
+document.getElementById('resetBtn').addEventListener('click', () => {
+  playing = false;
+  document.getElementById('playBtn').textContent = 'Play';
+  document.getElementById('statusVal').textContent = 'Paused';
+  resetAll();
+});
+
+document.querySelectorAll('.mode-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    mode = btn.dataset.mode;
+    playing = false;
+    document.getElementById('playBtn').textContent = 'Play';
+    document.getElementById('statusVal').textContent = 'Paused';
+    resetAll();
+  });
+});
+
+resetAll();
+</script>
+
+</body>
+</html>
