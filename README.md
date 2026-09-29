@@ -15,3 +15,4 @@ This repository is collaboratively owned and maintained by:
 Each contributor has a dedicated workspace to experiment independently, alongside shared work as joint projects take shape.
 
 ## Structure
+architecture work
