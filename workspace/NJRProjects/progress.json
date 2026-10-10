@@ -1,7 +1,19 @@
 {
-  "updated": "2026-10-09",
+  "updated": "2026-10-10",
   "repo": "NJROzzy/AI-Agentic-Modal-Collaborative-",
   "_status_values": "done | progress | todo",
+  "_std_values": "Tag a task with the standards it implements. Keys must match the 'standards' list below.",
+
+  "standards": {
+    "mcp": "Model Context Protocol",
+    "acp": "ACP & AGP",
+    "fcall": "Function calling",
+    "multiagent": "Multi-agent frameworks",
+    "state": "State management",
+    "m2m": "Machine-to-machine auth",
+    "sandbox": "Permissions & sandboxing",
+    "hitl": "Human-in-the-loop"
+  },
 
   "phases": [
     {
@@ -39,13 +51,15 @@
       "name": "First agent",
       "project": "Awaken",
       "path": "Collabe-work/Genesis/Awaken",
-      "summary": "A one-week sprint: the loop, tools and decisions that turn a language model into something that acts.",
+      "summary": "A one-week sprint: wrap a language model in a cognitive loop that plans, calls tools, reviews its own errors and adjusts.",
       "tasks": [
         { "title": "Scope, architecture, tool selection, env setup", "status": "progress", "link": "Collabe-work/Genesis/Awaken/README.md" },
-        { "title": "Core reasoning loop: think → act → observe", "status": "todo" },
-        { "title": "2–3 tools the agent can call", "status": "todo" },
-        { "title": "Memory across steps within a task", "status": "todo" },
-        { "title": "Error handling for failed tool calls", "status": "todo" },
+        { "title": "Core loop: plan → act → observe → review", "status": "todo" },
+        { "title": "Tools defined with JSON schemas", "status": "todo", "std": ["fcall"] },
+        { "title": "Scratchpad memory across steps", "status": "todo", "std": ["state"] },
+        { "title": "Error handling and self-review of failed tool calls", "status": "todo" },
+        { "title": "Run code-executing tools in a sandbox", "status": "todo", "std": ["sandbox"] },
+        { "title": "Ask for human approval before risky tool calls", "status": "todo", "std": ["hitl"] },
         { "title": "End-to-end demo scenario", "status": "todo" }
       ]
     },
@@ -54,50 +68,53 @@
       "name": "Multi-agent systems",
       "project": "Not named yet",
       "path": "",
-      "summary": "Several agents working together. Scope will be set once Awaken ships.",
+      "summary": "Split one agent into roles that hand work to each other, then compare our version with a standard framework.",
       "tasks": [
-        { "title": "Planner / worker pattern", "status": "todo" },
-        { "title": "Shared memory and message passing", "status": "todo" },
+        { "title": "Planner, Researcher, Executor and Reviewer roles", "status": "todo", "std": ["multiagent"] },
+        { "title": "Rebuild the flow in LangGraph or AutoGen and compare", "status": "todo", "std": ["multiagent"] },
+        { "title": "Long-term memory in a vector database", "status": "todo", "std": ["state"] },
+        { "title": "Agent-to-agent messaging over ACP", "status": "todo", "std": ["acp"] },
         { "title": "Joint demo with SA", "status": "todo" }
       ]
     },
     {
       "id": "ship",
-      "name": "Evaluate & ship",
+      "name": "Standards, security & ship",
       "project": "Not named yet",
       "path": "",
-      "summary": "Measure how well the agents work, then package and publish them.",
+      "summary": "Connect the agents through open protocols, lock down what they can do, measure them, and publish.",
       "tasks": [
+        { "title": "Expose our tools as an MCP server", "status": "todo", "std": ["mcp"] },
+        { "title": "Let our agent use existing MCP servers", "status": "todo", "std": ["mcp"] },
+        { "title": "Agent identity with OAuth access tokens", "status": "todo", "std": ["m2m"] },
+        { "title": "Least-privilege permissions per tool", "status": "todo", "std": ["sandbox"] },
         { "title": "Evaluation harness for agent tasks", "status": "todo" },
-        { "title": "Deploy a public demo", "status": "todo" },
-        { "title": "Write up what we learned", "status": "todo" }
+        { "title": "Deploy a public demo and write up what we learned", "status": "todo" }
       ]
     }
   ],
 
   "evolution": [
-    { "era": "Symbolic & rule-based agents", "when": "1950s–80s", "topics": "Logic, search, planning (STRIPS), expert systems", "status": "todo", "note": "" },
-    { "era": "The intelligent-agent framing", "when": "1990s", "topics": "Perceive → decide → act, BDI agents, early multi-agent systems", "status": "todo", "note": "" },
-    { "era": "Learning agents", "when": "1990s–2010s", "topics": "Reinforcement learning, TD-learning, deep RL (DQN, AlphaGo)", "status": "todo", "note": "" },
-    { "era": "Neural networks to Transformers", "when": "1958–2017", "topics": "Perceptron → backprop → deep learning → attention", "status": "progress", "note": "Genesis covers the perceptron and backprop by hand, and why one neuron can't learn XOR." },
-    { "era": "LLMs as reasoners", "when": "2018–2022", "topics": "Prompting, chain-of-thought", "status": "todo", "note": "" },
-    { "era": "LLM agents", "when": "2022–", "topics": "ReAct, tool use and function calling, RAG, memory", "status": "todo", "note": "" },
-    { "era": "Frameworks & protocols", "when": "2023–", "topics": "Orchestration frameworks, Model Context Protocol (MCP), computer use", "status": "todo", "note": "" },
-    { "era": "Multi-agent & autonomous systems", "when": "2024–", "topics": "Planner/worker patterns, evaluation, safety", "status": "todo", "note": "" }
+    { "era": "Rule-Based Automation", "when": "1990s–2010s", "summary": "If-then rules, scripts and early RPA. Predictable tasks only, no real decisions.", "status": "todo", "note": "" },
+    { "era": "Conversational AI & Early ML", "when": "2010s–2020", "summary": "Intent recognition, voice assistants and chatbots. Answers single questions.", "status": "progress", "note": "Genesis builds the ML underneath by hand: a neuron, a loss, gradient descent, and why one neuron can't learn XOR." },
+    { "era": "Generative AI", "when": "2020–2023", "summary": "LLMs generate text and code and reason through puzzles, but stay reactive and prompt-dependent.", "status": "todo", "note": "" },
+    { "era": "Agentic AI", "when": "2023–present", "summary": "LLMs inside cognitive loops: planning, RAG, tool use, self-review, adjusting until the goal is met.", "status": "progress", "note": "Awaken is our first agent loop. It is being scoped now." }
   ],
 
   "openSource": {
     "steps": [
-      { "title": "Pick 2–3 target projects (agent frameworks, PyTorch ecosystem, MCP servers)", "status": "todo" },
+      { "title": "Pick 2–3 target projects (MCP servers, LangGraph, AutoGen, PyTorch ecosystem)", "status": "todo" },
       { "title": "Read each contributing guide and set the project up locally", "status": "todo" },
       { "title": "Start with docs fixes and good-first-issue labels", "status": "todo" },
       { "title": "Land a first merged PR", "status": "todo" },
       { "title": "Publish Genesis and Awaken as documented open source", "status": "todo" }
     ],
+    "_contribution_shape": { "date": "YYYY-MM-DD", "project": "name", "title": "what changed", "type": "docs | fix | feature | issue", "link": "https://…", "status": "open | merged" },
     "contributions": []
   },
 
   "log": [
+    { "date": "2026-10-10", "track": "Site", "text": "Made the evolution and standards of agentic AI the home page, and mapped every phase task to the standard it implements." },
     { "date": "2026-10-09", "track": "Site", "text": "Launched this progress tracker on Vercel." },
     { "date": "2026-09-14", "track": "Phases", "text": "Wrote the Awaken plan, the first from-scratch agent sprint." },
     { "date": "2026-09-12", "track": "Phases", "text": "Confirmed a single neuron can't learn XOR and built the live demo." },

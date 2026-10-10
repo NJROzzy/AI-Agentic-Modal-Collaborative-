@@ -3,19 +3,20 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>NJR Projects</title>
-<meta name="description" content="Progress tracker for AI-Agentic-Modal-Collaborative: agentic AI build phases, the evolution of AI agents, and open-source work.">
+<title>Evolution of Agentic AI · NJR Projects</title>
+<meta name="description" content="How AI went from rule-based automation to agentic systems, the standards that define agentic AI in 2026, and how our repo measures up against each one.">
 <meta name="color-scheme" content="light dark">
-<meta property="og:title" content="NJR Projects">
-<meta property="og:description" content="Progress tracker for AI-Agentic-Modal-Collaborative: agentic AI build phases, the evolution of AI agents, and open-source work.">
+<meta property="og:title" content="The Evolution and Standards of Agentic AI">
+<meta property="og:description" content="How AI went from rule-based automation to agentic systems, the standards that define agentic AI in 2026, and how our repo measures up against each one.">
 <meta property="og:type" content="website">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%233442C9'/%3E%3Ccircle cx='16' cy='16' r='5' fill='%23fff'/%3E%3Cpath d='M4 9l7 5M4 23l7-5M28 16h-7' stroke='%23fff' stroke-width='2.2' stroke-linecap='round'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap">
 <style>
-  /* Layout: one 1080px column. Summary first (stats + three goal cards),
-     then one section per goal, then live repo activity. All content comes from progress.json. */
+  /* Layout: reading column (1080px). Hero states the thesis and shows an 8-cell
+     standards matrix for our repo; then a 4-era timeline; then the standards,
+     each paired with what our repo does about it (from progress.json). */
   :root {
     --bg: #F2F4F9;
     --surface: #FFFFFF;
@@ -57,181 +58,140 @@
   html { scroll-behavior: smooth; }
   @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } * { transition: none !important; } }
 
-  body {
-    margin: 0;
-    background: var(--bg);
-    color: var(--fg);
-    font-family: var(--body);
-    font-size: 17px;
-    line-height: 1.6;
-    -webkit-font-smoothing: antialiased;
-  }
-
+  body { margin: 0; background: var(--bg); color: var(--fg); font-family: var(--body); font-size: 17px; line-height: 1.6; -webkit-font-smoothing: antialiased; }
   .wrap { max-width: 1080px; margin: 0 auto; padding-inline: 20px; }
-
   a { color: var(--accent); text-underline-offset: 3px; }
-  a:focus-visible, button:focus-visible, summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
-
+  a:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
   h1, h2, h3 { font-family: var(--display); line-height: 1.1; margin: 0; text-wrap: balance; }
   p { margin: 0; }
   code { font-family: var(--mono); font-size: 0.85em; }
+  [id] { scroll-margin-top: 72px; }
 
-  .label {
-    font-family: var(--mono);
-    font-size: 0.72rem;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--muted);
-  }
+  .label { font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
 
   /* ---------- top bar ---------- */
-  .topbar {
-    position: sticky;
-    top: env(safe-area-inset-top, 0px);
-    z-index: 5;
-    background: color-mix(in srgb, var(--bg) 88%, transparent);
-    backdrop-filter: blur(8px);
-    border-bottom: 1px solid var(--line);
-  }
+  .topbar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: color-mix(in srgb, var(--bg) 88%, transparent); backdrop-filter: blur(8px); border-bottom: 1px solid var(--line); }
   .topbar .wrap { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-block: 12px; flex-wrap: wrap; }
   .brand { font-family: var(--display); font-weight: 800; font-size: 1.1rem; color: var(--fg); text-decoration: none; letter-spacing: -0.01em; }
   .brand span { color: var(--accent); }
-  .topbar nav { display: flex; gap: 18px; flex-wrap: wrap; }
+  .topbar nav { display: flex; gap: 18px; flex-wrap: wrap; align-items: center; }
   .topbar nav a { font-family: var(--mono); font-size: 0.8rem; color: var(--muted); text-decoration: none; }
   .topbar nav a:hover { color: var(--accent); }
+  .topbar nav a.cta { color: var(--accent); border: 1px solid var(--accent); border-radius: 6px; padding: 4px 10px; }
 
-  /* ---------- hero ---------- */
-  .hero { padding-block: 48px 36px; }
-  .hero h1 { font-size: clamp(2.1rem, 5.6vw, 3.8rem); font-weight: 800; letter-spacing: -0.03em; max-width: 18ch; margin-top: 12px; }
-  .hero h1 em { font-style: normal; color: var(--accent); }
-  .hero .lede { margin-top: 16px; max-width: 64ch; color: var(--muted); font-size: 1.05rem; }
-
-  .stats { margin-top: 32px; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); border: 1px solid var(--line); border-radius: 10px; background: var(--surface); }
-  .stat { padding: 16px 18px; border-left: 1px solid var(--line); min-width: 0; display: flex; flex-direction: column; gap: 4px; }
-  .stat:first-child { border-left: none; }
-  .stat .v { font-family: var(--display); font-weight: 700; font-size: 1.9rem; line-height: 1.1; font-variant-numeric: tabular-nums; }
-  .stat .s { font-size: 0.85rem; color: var(--muted); }
-  @media (max-width: 760px) {
-    .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-    .stat:nth-child(3) { border-left: none; }
-    .stat:nth-child(n+3) { border-top: 1px solid var(--line); }
-  }
-
-  /* ---------- shared bits ---------- */
-  .pill {
-    display: inline-flex; align-items: center; gap: 6px;
-    font-family: var(--mono); font-size: 0.72rem; font-weight: 500;
-    padding: 3px 9px; border-radius: 999px; white-space: nowrap;
-  }
+  /* ---------- shared ---------- */
+  .pill { display: inline-flex; align-items: center; gap: 6px; font-family: var(--mono); font-size: 0.72rem; font-weight: 500; padding: 3px 9px; border-radius: 999px; white-space: nowrap; }
   .pill::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
   .pill.done { color: var(--done); background: var(--done-soft); }
   .pill.progress { color: var(--progress); background: var(--progress-soft); }
-  .pill.todo { color: var(--idle); background: var(--idle-soft); }
+  .pill.todo { color: var(--accent); background: var(--accent-soft); }
+  .pill.none { color: var(--idle); background: var(--idle-soft); }
 
-  .meter { height: 6px; border-radius: 999px; background: var(--idle-soft); overflow: hidden; display: flex; }
-  .meter .d { background: var(--done); }
-  .meter .p { background: var(--progress); }
-  .meter-row { display: flex; align-items: center; gap: 12px; }
-  .meter-row .meter { flex: 1; }
-  .meter-row .pct { font-family: var(--mono); font-size: 0.8rem; color: var(--muted); font-variant-numeric: tabular-nums; min-width: 3.2em; text-align: right; }
-
-  section.block { padding-block: 52px; border-top: 1px solid var(--line); }
-  .head { display: flex; flex-direction: column; gap: 8px; margin-bottom: 26px; max-width: 64ch; }
-  .head h2 { font-size: clamp(1.6rem, 3.6vw, 2.2rem); font-weight: 700; letter-spacing: -0.02em; }
-  .head p { color: var(--muted); }
-
-  /* ---------- goal cards ---------- */
-  .goals { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; margin-top: 16px; }
-  @media (max-width: 860px) { .goals { grid-template-columns: 1fr; } }
-  .goal { display: flex; flex-direction: column; gap: 12px; padding: 20px; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; color: inherit; text-decoration: none; min-width: 0; transition: border-color .15s; }
-  .goal:hover { border-color: var(--accent); }
-  .goal .top { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
-  .goal .num { font-family: var(--mono); font-size: 0.8rem; color: var(--accent); }
-  .goal h3 { font-size: 1.25rem; }
-  .goal p { color: var(--muted); font-size: 0.93rem; }
-  .goal .now { font-size: 0.88rem; color: var(--fg); }
-  .goal .now b { font-family: var(--mono); font-weight: 500; font-size: 0.72rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; margin-right: 6px; }
-
-  /* ---------- phases ---------- */
-  .phases { display: flex; flex-direction: column; gap: 14px; }
-  .phase { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; }
-  .phase.current { border-color: var(--accent); }
-  .phase summary { list-style: none; cursor: pointer; padding: 18px 20px; display: grid; grid-template-columns: 3.2rem minmax(0, 1fr) auto; gap: 6px 16px; align-items: center; }
-  .phase summary::-webkit-details-marker { display: none; }
-  .phase .pn { grid-row: span 2; font-family: var(--display); font-weight: 800; font-size: 1.9rem; color: var(--accent); line-height: 1; }
-  .phase .pt { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px; min-width: 0; }
-  .phase .pt h3 { font-size: 1.2rem; }
-  .phase .pt .proj { font-family: var(--mono); font-size: 0.78rem; color: var(--muted); }
-  .phase .pm { grid-column: 2 / 4; }
-  .phase .chev { font-family: var(--mono); color: var(--muted); transition: transform .15s; }
-  .phase[open] .chev { transform: rotate(90deg); }
-  .phase .body { padding: 0 20px 20px calc(20px + 3.2rem + 16px); display: flex; flex-direction: column; gap: 14px; }
-  @media (max-width: 560px) {
-    .phase summary { grid-template-columns: 2.2rem minmax(0, 1fr) auto; }
-    .phase .pn { font-size: 1.5rem; }
-    .phase .body { padding-left: 20px; }
-  }
-  .phase .body > p { color: var(--muted); font-size: 0.95rem; max-width: 70ch; }
-
-  .tasks { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px 24px; }
-  @media (max-width: 760px) { .tasks { grid-template-columns: 1fr; } }
-  .tasks li { display: grid; grid-template-columns: 18px minmax(0, 1fr); gap: 10px; align-items: baseline; font-size: 0.95rem; }
-  .mark { width: 14px; height: 14px; border-radius: 4px; border: 1.5px solid var(--idle); display: inline-grid; place-items: center; transform: translateY(2px); }
+  .mark { width: 14px; height: 14px; border-radius: 4px; border: 1.5px solid var(--idle); display: inline-grid; place-items: center; transform: translateY(2px); flex: 0 0 14px; }
   .mark.done { background: var(--done); border-color: var(--done); }
   .mark.done::after { content: ""; width: 7px; height: 4px; border-left: 2px solid var(--surface); border-bottom: 2px solid var(--surface); transform: rotate(-45deg) translate(1px, -1px); }
   .mark.progress { border-color: var(--progress); background: linear-gradient(90deg, var(--progress) 50%, transparent 50%); }
-  .tasks li.done span.t { color: var(--muted); }
-  .tasks a { word-break: break-word; }
 
-  /* ---------- evolution ---------- */
-  .eras { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 32px; }
-  @media (max-width: 760px) { .eras { grid-template-columns: 1fr; } }
-  .eras li { display: grid; grid-template-columns: 2.2rem minmax(0, 1fr) auto; gap: 4px 12px; padding-block: 14px; border-bottom: 1px solid var(--line); align-items: baseline; }
-  .eras .n { grid-row: span 3; font-family: var(--mono); font-size: 0.8rem; color: var(--accent); }
-  .eras strong { font-family: var(--display); font-size: 1.05rem; }
-  .eras .when { font-family: var(--mono); font-size: 0.75rem; color: var(--muted); margin-left: 6px; font-weight: 400; white-space: nowrap; }
-  .eras .topics { grid-column: 2 / 4; color: var(--muted); font-size: 0.92rem; }
-  .eras .note { grid-column: 2 / 4; font-size: 0.92rem; border-left: 2px solid var(--accent); padding-left: 10px; }
+  section.block { padding-block: 56px; border-top: 1px solid var(--line); }
+  .head { display: flex; flex-direction: column; gap: 8px; margin-bottom: 30px; max-width: 66ch; }
+  .head h2 { font-size: clamp(1.7rem, 3.8vw, 2.4rem); font-weight: 700; letter-spacing: -0.02em; }
+  .head p { color: var(--muted); }
 
-  /* ---------- open source ---------- */
-  .os { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); gap: 28px; align-items: start; }
-  @media (max-width: 820px) { .os { grid-template-columns: 1fr; } }
-  .os .tasks { grid-template-columns: 1fr; }
-  .empty { padding: 22px; border: 1px dashed var(--line); border-radius: 10px; display: flex; flex-direction: column; gap: 8px; }
-  .empty p { color: var(--muted); font-size: 0.95rem; }
-  .tbl-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); }
-  table.contrib { width: 100%; border-collapse: collapse; font-size: 0.92rem; }
-  table.contrib th { text-align: left; font-family: var(--mono); font-size: 0.7rem; font-weight: 500; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); padding: 10px 14px; border-bottom: 1px solid var(--line); white-space: nowrap; }
-  table.contrib td { padding: 10px 14px; border-bottom: 1px solid var(--line); vertical-align: top; }
-  table.contrib tr:last-child td { border-bottom: none; }
-  table.contrib td.date { font-family: var(--mono); font-size: 0.8rem; color: var(--muted); white-space: nowrap; }
+  /* ---------- hero ---------- */
+  .hero { padding-block: 52px 44px; }
+  .hero h1 { font-size: clamp(2.2rem, 6vw, 4.1rem); font-weight: 800; letter-spacing: -0.035em; max-width: 17ch; margin-top: 12px; }
+  .hero h1 em { font-style: normal; color: var(--accent); }
+  .hero .lede { margin-top: 18px; max-width: 66ch; font-size: 1.1rem; color: var(--muted); }
+  .hero .lede strong { color: var(--fg); font-weight: 700; }
 
-  /* ---------- activity ---------- */
-  .activity { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 28px; align-items: start; }
-  @media (max-width: 820px) { .activity { grid-template-columns: 1fr; } }
-  .col-head { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; margin-bottom: 12px; flex-wrap: wrap; }
-  .col-head h3 { font-size: 1.15rem; }
-  .commits { list-style: none; margin: 0; padding: 0; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); }
-  .commits li { padding: 12px 16px; border-bottom: 1px solid var(--line); display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 2px 12px; }
-  .commits li:last-child { border-bottom: none; }
-  .commits .msg { color: var(--fg); text-decoration: none; font-weight: 700; overflow-wrap: anywhere; }
-  .commits .msg:hover { color: var(--accent); }
-  .commits .sha { font-family: var(--mono); font-size: 0.75rem; color: var(--accent); }
-  .commits .by { grid-column: 1 / 3; font-size: 0.85rem; color: var(--muted); }
-  .commits .state { padding: 16px; color: var(--muted); font-size: 0.92rem; display: block; }
+  .matrix { margin-top: 34px; padding: 18px 20px; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; display: flex; flex-direction: column; gap: 14px; }
+  .matrix .mh { display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 8px 16px; }
+  .matrix .mh h3 { font-size: 1.1rem; }
+  .matrix .sum { font-family: var(--mono); font-size: 0.8rem; color: var(--muted); }
+  .cells { display: grid; grid-template-columns: repeat(8, minmax(0, 1fr)); gap: 8px; }
+  @media (max-width: 860px) { .cells { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+  @media (max-width: 420px) { .cells { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  .cell { display: flex; flex-direction: column; gap: 8px; padding: 10px; border-radius: 8px; border: 1px solid var(--line); text-decoration: none; color: var(--fg); min-width: 0; transition: border-color .15s; }
+  .cell:hover { border-color: var(--accent); }
+  .cell .sq { height: 6px; border-radius: 3px; background: var(--idle-soft); }
+  .cell.done .sq { background: var(--done); }
+  .cell.progress .sq { background: var(--progress); }
+  .cell.todo .sq { background: repeating-linear-gradient(90deg, var(--accent) 0 6px, transparent 6px 10px); opacity: .7; }
+  .cell .nm { font-size: 0.82rem; line-height: 1.25; font-weight: 700; }
+  .cell .st { font-family: var(--mono); font-size: 0.68rem; color: var(--muted); }
+  .legend { display: flex; gap: 14px; flex-wrap: wrap; font-family: var(--mono); font-size: 0.72rem; color: var(--muted); }
+  .legend span { display: inline-flex; align-items: center; gap: 6px; }
+  .legend i { width: 16px; height: 6px; border-radius: 3px; display: inline-block; background: var(--idle-soft); }
+  .legend i.done { background: var(--done); }
+  .legend i.progress { background: var(--progress); }
+  .legend i.todo { background: repeating-linear-gradient(90deg, var(--accent) 0 6px, transparent 6px 10px); opacity: .7; }
 
-  .log { list-style: none; margin: 0; padding: 0; position: relative; }
-  .log::before { content: ""; position: absolute; left: 5.7rem; top: 10px; bottom: 10px; width: 1px; background: var(--line); }
-  .log li { display: grid; grid-template-columns: 5rem 1.4rem minmax(0, 1fr); align-items: baseline; padding-block: 8px; }
-  .log time { font-family: var(--mono); font-size: 0.8rem; color: var(--muted); font-variant-numeric: tabular-nums; }
-  .log .dot { width: 9px; height: 9px; border-radius: 50%; background: var(--accent); justify-self: center; box-shadow: 0 0 0 4px var(--bg); }
-  .log .tag { font-family: var(--mono); font-size: 0.72rem; color: var(--accent); margin-right: 6px; }
+  /* ---------- evolution timeline ---------- */
+  .timeline { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0; position: relative; }
+  .era { padding: 0 18px 0 0; display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+  .era .axis { position: relative; height: 22px; margin-bottom: 4px; }
+  .era .axis::before { content: ""; position: absolute; left: 0; right: 0; top: 10px; height: 2px; background: var(--line); }
+  .era .axis::after { content: ""; position: absolute; left: 0; top: 4px; width: 14px; height: 14px; border-radius: 50%; background: var(--bg); border: 2px solid var(--accent); }
+  .era.now .axis::after { background: var(--accent); box-shadow: 0 0 0 5px var(--accent-soft); }
+  .era.now .axis::before { background: linear-gradient(90deg, var(--accent), transparent); }
+  .era .when { font-family: var(--mono); font-size: 0.8rem; color: var(--accent); }
+  .era h3 { font-size: 1.3rem; }
+  .era .txt { color: var(--muted); font-size: 0.95rem; }
+  .era .ours { margin-top: auto; padding-top: 12px; border-top: 1px dashed var(--line); display: flex; flex-direction: column; gap: 6px; font-size: 0.9rem; }
+  .era .ours .label { font-size: 0.66rem; }
+  @media (max-width: 860px) {
+    .timeline { grid-template-columns: 1fr; gap: 28px; }
+    .era { padding: 0 0 0 30px; position: relative; }
+    .era .axis { position: absolute; left: 0; top: 0; bottom: -28px; width: 14px; height: auto; margin: 0; }
+    .era .axis::before { left: 6px; right: auto; top: 18px; bottom: 0; width: 2px; height: auto; }
+    .era.now .axis::before { background: var(--line); }
+    .era:last-child .axis::before { display: none; }
+  }
 
-  .links-row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 18px; }
-  .btn { display: inline-block; font-family: var(--mono); font-size: 0.8rem; text-decoration: none; padding: 8px 14px; border-radius: 6px; border: 1px solid var(--line); color: var(--fg); background: var(--surface); }
-  .btn:hover { border-color: var(--accent); color: var(--accent); }
+  .shift { margin-top: 30px; display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); gap: 16px; align-items: center; padding: 18px 20px; border-radius: 10px; background: var(--accent-soft); }
+  .shift .side p { font-size: 0.92rem; color: var(--fg); }
+  .shift .arrow { font-family: var(--mono); font-size: 1.4rem; color: var(--accent); }
+  @media (max-width: 640px) { .shift { grid-template-columns: 1fr; } .shift .arrow { transform: rotate(90deg); justify-self: start; } }
 
-  .notice { padding: 14px 16px; border: 1px solid var(--signal); border-radius: 8px; color: var(--fg); font-size: 0.92rem; margin-top: 20px; }
+  /* ---------- standards ---------- */
+  .group { display: flex; flex-direction: column; gap: 14px; }
+  .group + .group { margin-top: 44px; }
+  .group-h { display: flex; align-items: baseline; gap: 14px; }
+  .group-h .gn { font-family: var(--display); font-weight: 800; font-size: 2rem; color: var(--accent); line-height: 1; }
+  .group-h h3 { font-size: 1.45rem; }
+
+  .std { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); background: var(--surface); border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
+  @media (max-width: 820px) { .std { grid-template-columns: 1fr; } }
+  .std .what { padding: 20px 22px; display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+  .std .what h4 { font-family: var(--display); font-size: 1.2rem; margin: 0; line-height: 1.2; }
+  .std .what .by { font-family: var(--mono); font-size: 0.75rem; color: var(--muted); }
+  .std .what p { color: var(--muted); font-size: 0.95rem; }
+  .std .ours { padding: 18px 22px 20px; background: color-mix(in srgb, var(--bg) 55%, var(--surface)); border-left: 1px solid var(--line); display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+  @media (max-width: 820px) { .std .ours { border-left: none; border-top: 1px solid var(--line); } }
+  .std .ours .oh { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .std .ours ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+  .std .ours li { display: flex; gap: 10px; align-items: baseline; font-size: 0.92rem; }
+  .std .ours li .ph { display: block; font-family: var(--mono); font-size: 0.7rem; color: var(--muted); }
+  .std .ours .gap { font-size: 0.92rem; color: var(--muted); }
+
+  /* ---------- progress band ---------- */
+  .band { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr); gap: 32px; align-items: center; }
+  @media (max-width: 820px) { .band { grid-template-columns: 1fr; } }
+  .band h2 { font-size: clamp(1.6rem, 3.6vw, 2.2rem); letter-spacing: -0.02em; }
+  .band p { color: var(--muted); margin-top: 10px; }
+  .goals { display: flex; flex-direction: column; gap: 14px; }
+  .goal { display: grid; grid-template-columns: minmax(0, 11rem) minmax(0, 1fr) 3.4em; gap: 12px; align-items: center; color: var(--fg); text-decoration: none; }
+  .goal:hover .gname { color: var(--accent); }
+  .goal .gname { font-weight: 700; font-size: 0.95rem; }
+  .goal .pct { font-family: var(--mono); font-size: 0.8rem; color: var(--muted); text-align: right; font-variant-numeric: tabular-nums; }
+  @media (max-width: 480px) { .goal { grid-template-columns: minmax(0, 1fr) 3.4em; } .goal .meter { grid-column: 1 / 3; grid-row: 2; } }
+  .meter { height: 8px; border-radius: 999px; background: var(--idle-soft); overflow: hidden; display: flex; }
+  .meter .d { background: var(--done); }
+  .meter .p { background: var(--progress); }
+  .btn { display: inline-block; margin-top: 18px; font-family: var(--mono); font-size: 0.82rem; text-decoration: none; padding: 9px 16px; border-radius: 6px; background: var(--accent); color: var(--surface); }
+  .btn:hover { filter: brightness(1.08); }
+
+  .notice { padding: 14px 16px; border: 1px solid var(--signal); border-radius: 8px; font-size: 0.92rem; margin-top: 18px; }
 
   footer { border-top: 1px solid var(--line); padding-block: 28px 40px; color: var(--muted); font-size: 0.88rem; }
   footer .wrap { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
@@ -243,10 +203,9 @@
   <div class="wrap">
     <a class="brand" href="#top">NJR<span>/</span>Projects</a>
     <nav aria-label="Sections">
-      <a href="#phases">Phases</a>
       <a href="#evolution">Evolution</a>
-      <a href="#open-source">Open source</a>
-      <a href="#activity">Activity</a>
+      <a href="#standards">Standards</a>
+      <a class="cta" href="progress.html">Repo progress</a>
     </nav>
   </div>
 </header>
@@ -254,93 +213,139 @@
 <main id="top">
   <section class="hero">
     <div class="wrap">
-      <p class="label">Progress tracker · AI-Agentic-Modal-Collaborative</p>
-      <h1>Where the repo is, <em>and where it's going.</em></h1>
-      <p class="lede">This site tracks the progress of our collaborative repo across three goals: building an agentic AI system phase by phase, understanding how AI agents evolved, and working on open source. Phase status comes from <code>progress.json</code>; commits come live from GitHub.</p>
+      <p class="label">Agentic AI · 2026</p>
+      <h1>The Evolution and Standards of <em>Agentic AI</em></h1>
+      <p class="lede">AI has shifted from a passive, prompt-response framework into an autonomous, executing force known as <strong>agentic AI</strong>. Instead of only generating text or answering questions, agentic systems use large language models as a "central nervous system" to independently plan, use tools, collaborate with other agents, and run multi-step workflows.</p>
 
-      <div class="stats" aria-live="polite">
-        <div class="stat"><span class="label">Agentic phases</span><span class="v" id="st-phases">–</span><span class="s" id="st-phases-s">loading</span></div>
-        <div class="stat"><span class="label">Evolution eras</span><span class="v" id="st-eras">–</span><span class="s" id="st-eras-s">loading</span></div>
-        <div class="stat"><span class="label">Open source</span><span class="v" id="st-os">–</span><span class="s" id="st-os-s">loading</span></div>
-        <div class="stat"><span class="label">Repo commits</span><span class="v" id="st-commits">–</span><span class="s" id="st-commits-s">from GitHub</span></div>
+      <div class="matrix" id="matrix">
+        <div class="mh">
+          <h3>Our repo against the 2026 standards</h3>
+          <span class="sum" id="matrix-sum">Loading…</span>
+        </div>
+        <div class="cells" id="cells"></div>
+        <div class="legend"><span><i class="done"></i>Implemented</span><span><i class="progress"></i>In progress</span><span><i class="todo"></i>Planned</span><span><i></i>Not planned yet</span></div>
       </div>
-
-      <div class="goals" id="goals"></div>
-      <div id="load-error" hidden class="notice"></div>
-    </div>
-  </section>
-
-  <section class="block" id="phases">
-    <div class="wrap">
-      <div class="head">
-        <p class="label">Goal 1</p>
-        <h2>Agentic AI phases</h2>
-        <p>The build path from a single neuron to working agents. Each phase must be solid before the next one starts.</p>
-      </div>
-      <div class="phases" id="phase-list"></div>
+      <div id="load-error" class="notice" hidden></div>
     </div>
   </section>
 
   <section class="block" id="evolution">
     <div class="wrap">
       <div class="head">
-        <p class="label">Goal 2</p>
-        <h2>Evolution of AI agents</h2>
-        <p>The eras we're studying, in order. Each gets a short note once it's covered: the key idea, a key paper or system, and what it changed.</p>
+        <p class="label">Part 1</p>
+        <h2>The evolution of agentic AI</h2>
+        <p>Four eras, from rigid rules to models that plan and act. Under each one: where our repo's work sits.</p>
       </div>
-      <div class="meter-row" style="margin-bottom:18px;max-width:420px"><div class="meter" id="era-meter"></div><span class="pct" id="era-pct"></span></div>
-      <ol class="eras" id="era-list"></ol>
+
+      <ol class="timeline">
+        <li class="era" data-era="0">
+          <span class="axis" aria-hidden="true"></span>
+          <span class="when">1990s–2010s</span>
+          <h3>Rule-Based Automation</h3>
+          <p class="txt">Powered by rigid if-then structures, basic scripts and early Robotic Process Automation (RPA). These systems could only handle highly predictable tasks and had no real decision-making capability.</p>
+          <div class="ours"></div>
+        </li>
+        <li class="era" data-era="1">
+          <span class="axis" aria-hidden="true"></span>
+          <span class="when">2010s–2020</span>
+          <h3>Conversational AI &amp; Early ML</h3>
+          <p class="txt">Driven by intent-recognition machine learning, which gave rise to voice assistants like Siri and basic customer-service chatbots. They were context-aware but limited to answering single questions without real-world utility.</p>
+          <div class="ours"></div>
+        </li>
+        <li class="era" data-era="2">
+          <span class="axis" aria-hidden="true"></span>
+          <span class="when">2020–2023</span>
+          <h3>Generative AI</h3>
+          <p class="txt">LLMs like GPT-3 and GPT-4 let machines generate new content and code and reason through logic puzzles. But it stayed System 1 thinking: reactive, prompt-dependent, with no long-term memory and no real-world read-write access.</p>
+          <div class="ours"></div>
+        </li>
+        <li class="era now" data-era="3">
+          <span class="axis" aria-hidden="true"></span>
+          <span class="when">2023–present</span>
+          <h3>Agentic AI</h3>
+          <p class="txt">LLMs are packaged inside cognitive loops. They take an open-ended goal, break it into a task list (planning), fetch documents (RAG), write code, call third-party APIs (tool use), review their own errors, and adjust until the goal is reached.</p>
+          <div class="ours"></div>
+        </li>
+      </ol>
+
+      <div class="shift">
+        <div class="side"><p class="label">Generative AI</p><p>Prompt in, text out. Reactive, no memory, no access to the world.</p></div>
+        <span class="arrow" aria-hidden="true">→</span>
+        <div class="side"><p class="label">Agentic AI</p><p>Goal in, outcome out: plan → act with tools → observe → review → repeat.</p></div>
+      </div>
     </div>
   </section>
 
-  <section class="block" id="open-source">
+  <section class="block" id="standards">
     <div class="wrap">
       <div class="head">
-        <p class="label">Goal 3</p>
-        <h2>Open source work</h2>
-        <p>Learning from real codebases by contributing to them, and publishing our own work openly.</p>
+        <p class="label">Part 2</p>
+        <h2>Current standards &amp; ecosystem</h2>
+        <p>What an agentic system is expected to do in 2026. Next to each standard is what our repo does about it, pulled from the tasks in our build phases.</p>
       </div>
-      <div class="os">
-        <div>
-          <p class="label" style="margin-bottom:12px">Plan</p>
-          <ul class="tasks" id="os-steps"></ul>
-        </div>
-        <div>
-          <p class="label" style="margin-bottom:12px">Contributions</p>
-          <div id="os-contrib"></div>
-        </div>
+
+      <div class="group">
+        <div class="group-h"><span class="gn">1</span><h3>Communication &amp; tool integration protocols</h3></div>
+        <article class="std" id="std-mcp" data-std="mcp">
+          <div class="what"><h4>Model Context Protocol (MCP)</h4><span class="by">Pioneered by Anthropic</span><p>An open, plug-and-play architecture that lets LLMs safely read data from local files, connect to databases, and invoke software environments in a uniform way.</p></div>
+          <div class="ours"></div>
+        </article>
+        <article class="std" id="std-acp" data-std="acp">
+          <div class="what"><h4>Agent Communication Protocol (ACP) &amp; AGP</h4><span class="by">Promoted by IBM and the Linux Foundation</span><p>REST- and gRPC-based enterprise protocols for how multi-agent swarms orchestrate data, signal one another, and transfer tasks across secure architectures.</p></div>
+          <div class="ours"></div>
+        </article>
+        <article class="std" id="std-fcall" data-std="fcall">
+          <div class="what"><h4>Function calling protocols</h4><span class="by">Formalized by OpenAI and the community</span><p>Predictable schema formats, like JSON, so agents don't hallucinate arguments when they trigger code execution.</p></div>
+          <div class="ours"></div>
+        </article>
+      </div>
+
+      <div class="group">
+        <div class="group-h"><span class="gn">2</span><h3>Architecture &amp; orchestration</h3></div>
+        <article class="std" id="std-multiagent" data-std="multiagent">
+          <div class="what"><h4>Multi-agent frameworks</h4><span class="by">LangGraph, AutoGen</span><p>Instead of one monolithic agent doing everything, work flows through standard roles: a Planner splits tasks, a Researcher calls APIs, an Executor runs code, and a Reviewer checks output quality.</p></div>
+          <div class="ours"></div>
+        </article>
+        <article class="std" id="std-state" data-std="state">
+          <div class="what"><h4>State management</h4><span class="by">Short-term and long-term memory</span><p>Agents are no longer stateless. Short-term working memory lives in scratchpads; long-term memory lives in vector databases that track preferences and history.</p></div>
+          <div class="ours"></div>
+        </article>
+      </div>
+
+      <div class="group">
+        <div class="group-h"><span class="gn">3</span><h3>Security, identity &amp; governance</h3></div>
+        <article class="std" id="std-m2m" data-std="m2m">
+          <div class="what"><h4>Machine-to-machine authentication</h4><span class="by">OAuth, access tokens</span><p>Agents verify their software identity with OAuth and dedicated access tokens before they query databases.</p></div>
+          <div class="ours"></div>
+        </article>
+        <article class="std" id="std-sandbox" data-std="sandbox">
+          <div class="what"><h4>Dynamic permissions &amp; sandboxing</h4><span class="by">Least privilege</span><p>Agents run in isolated code sandboxes with least-privilege permissions, for example a cap on how many tools an agent can invoke before it has to re-authenticate.</p></div>
+          <div class="ours"></div>
+        </article>
+        <article class="std" id="std-hitl" data-std="hitl">
+          <div class="what"><h4>Human-in-the-loop (HITL)</h4><span class="by">Approval checkpoints</span><p>High-risk operations, like a bank transaction or a change to a cloud database, stop at a hard checkpoint until a human approves them.</p></div>
+          <div class="ours"></div>
+        </article>
       </div>
     </div>
   </section>
 
-  <section class="block" id="activity">
-    <div class="wrap">
-      <div class="head">
-        <p class="label">Repo</p>
-        <h2>Activity</h2>
+  <section class="block">
+    <div class="wrap band">
+      <div>
+        <p class="label">Our repo</p>
+        <h2 style="margin-top:8px">Building toward the standards</h2>
+        <p>We're building every layer by hand: a neuron first, then an agent loop, then multiple agents, then the protocols and safeguards above. The full tracker has every phase, task, contribution and commit.</p>
+        <a class="btn" href="progress.html">Open repo progress →</a>
       </div>
-      <div class="activity">
-        <div>
-          <div class="col-head"><h3>Latest commits</h3><span class="label" id="commit-src">live from GitHub</span></div>
-          <ul class="commits" id="commit-list"><li><span class="state">Loading commits from GitHub…</span></li></ul>
-        </div>
-        <div>
-          <div class="col-head"><h3>Milestones</h3></div>
-          <ol class="log" id="log-list"></ol>
-        </div>
-      </div>
-      <div class="links-row">
-        <a class="btn" id="repo-link" href="https://github.com/NJROzzy/AI-Agentic-Modal-Collaborative-" target="_blank" rel="noopener">Repo on GitHub</a>
-        <a class="btn" href="xor-live-demo.html">XOR live demo</a>
-        <a class="btn" href="main.html">The Wild World of AI, ML &amp; DL</a>
-      </div>
+      <div class="goals" id="goals"></div>
     </div>
   </section>
 </main>
 
 <footer>
   <div class="wrap">
-    <span>NJR &amp; SA · to update progress, edit <code>progress.json</code> and redeploy</span>
+    <span>Source: <em>The Evolution and Standards of Agentic AI</em> (2026) · NJR &amp; SA, <a href="https://github.com/NJROzzy/AI-Agentic-Modal-Collaborative-" target="_blank" rel="noopener">AI-Agentic-Modal-Collaborative</a></span>
     <span class="label" id="updated"></span>
   </div>
 </footer>
@@ -349,158 +354,84 @@
 (function () {
   const $ = (id) => document.getElementById(id);
   const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
-  const STATUS_LABEL = { done: "Done", progress: "In progress", todo: "Not started" };
-  const fmtDate = (iso, opts) => new Date(iso + (iso.length === 10 ? "T12:00:00" : "")).toLocaleDateString("en-US", opts || { month: "short", day: "numeric" });
-
-  let REPO = "NJROzzy/AI-Agentic-Modal-Collaborative-";
-  const ghUrl = (path) => /^https?:/.test(path) ? path
-    : (!path.includes("/") && path.endsWith(".html")) ? path
-    : `https://github.com/${REPO}/${/\.[a-z]+$/i.test(path) ? "blob" : "tree"}/main/${path}`;
+  const TASK_LABEL = { done: "Done", progress: "In progress", todo: "Not started" };
+  const STD_LABEL = { done: "Implemented", progress: "In progress", todo: "Planned", none: "Not planned yet" };
+  const ERA_LABEL = { done: "Covered", progress: "In progress", todo: "Not yet" };
+  const pill = (st, text) => `<span class="pill ${st}">${esc(text)}</span>`;
 
   // done = 1, in progress = 0.5, not started = 0
   function score(items) {
     const n = items.length || 1;
     const d = items.filter((t) => t.status === "done").length;
     const p = items.filter((t) => t.status === "progress").length;
-    return { d, p, n: items.length, pct: Math.round(((d + p * 0.5) / n) * 100), dPct: (d / n) * 100, pPct: (p / n) * 100 };
+    return { pct: Math.round(((d + p * 0.5) / n) * 100), dPct: (d / n) * 100, pPct: (p / n) * 100 };
   }
-  const meter = (s) => `<span class="d" style="width:${s.dPct}%"></span><span class="p" style="width:${s.pPct}%"></span>`;
-  const statusOf = (items) => items.every((t) => t.status === "done") ? "done" : items.some((t) => t.status !== "todo") ? "progress" : "todo";
-  const pill = (st, text) => `<span class="pill ${st}">${esc(text || STATUS_LABEL[st])}</span>`;
-
-  function taskItem(t) {
-    const title = t.link ? `<a href="${esc(ghUrl(t.link))}"${t.link.endsWith(".html") && !t.link.includes("/") ? "" : ' target="_blank" rel="noopener"'}>${esc(t.title)}</a>` : esc(t.title);
-    return `<li class="${t.status}"><span class="mark ${t.status}" role="img" aria-label="${STATUS_LABEL[t.status]}"></span><span class="t">${title}</span></li>`;
+  // A standard is implemented when all its tasks are done, in progress when any have started,
+  // planned when tasks exist but none have started, and not planned when no task is tagged with it.
+  function stdStatus(tasks) {
+    if (!tasks.length) return "none";
+    if (tasks.every((t) => t.status === "done")) return "done";
+    if (tasks.some((t) => t.status !== "todo")) return "progress";
+    return "todo";
   }
 
   function render(data) {
-    if (data.repo) REPO = data.repo;
-    $("repo-link").href = `https://github.com/${REPO}`;
-    $("updated").textContent = data.updated ? `Progress updated ${fmtDate(data.updated, { month: "short", day: "numeric", year: "numeric" })}` : "";
-
-    // ---- phases
     const phases = data.phases || [];
-    const allTasks = phases.flatMap((p) => p.tasks);
-    const ps = score(allTasks);
-    const currentIdx = phases.findIndex((p) => statusOf(p.tasks) !== "done");
-    $("phase-list").innerHTML = phases.map((p, i) => {
-      const s = score(p.tasks), st = statusOf(p.tasks);
-      const open = i === currentIdx || st === "progress";
-      return `<details class="phase${i === currentIdx ? " current" : ""}"${open ? " open" : ""}>
-        <summary>
-          <span class="pn">${i + 1}</span>
-          <span class="pt"><h3>${esc(p.name)}</h3><span class="proj">${esc(p.project)}</span>${pill(st)}</span>
-          <span class="chev" aria-hidden="true">›</span>
-          <span class="pm meter-row"><span class="meter">${meter(s)}</span><span class="pct">${s.d}/${s.n}</span></span>
-        </summary>
-        <div class="body">
-          <p>${esc(p.summary)}${p.path ? ` <a href="${esc(ghUrl(p.path))}" target="_blank" rel="noopener"><code>${esc(p.path)}</code></a>` : ""}</p>
-          <ul class="tasks">${p.tasks.map(taskItem).join("")}</ul>
-        </div>
-      </details>`;
+    const names = data.standards || {};
+    const byStd = {};
+    Object.keys(names).forEach((k) => (byStd[k] = []));
+    phases.forEach((ph, i) => ph.tasks.forEach((t) => (t.std || []).forEach((k) => (byStd[k] = byStd[k] || []).push({ ...t, phase: `Phase ${i + 1} · ${ph.project !== "Not named yet" ? ph.project : ph.name}` }))));
+
+    // ---- standards matrix + detail panels
+    const counts = { done: 0, progress: 0, todo: 0, none: 0 };
+    $("cells").innerHTML = Object.keys(names).map((k) => {
+      const st = stdStatus(byStd[k]);
+      counts[st]++;
+      return `<a class="cell ${st}" href="#std-${esc(k)}"><span class="sq"></span><span class="nm">${esc(names[k])}</span><span class="st">${STD_LABEL[st]}</span></a>`;
     }).join("");
+    const total = Object.keys(names).length;
+    $("matrix-sum").textContent = `${counts.done} of ${total} implemented · ${counts.progress} in progress · ${counts.todo} planned`;
 
-    const donePhases = phases.filter((p) => statusOf(p.tasks) === "done").length;
-    $("st-phases").textContent = `${ps.pct}%`;
-    $("st-phases-s").textContent = `${ps.d} of ${ps.n} tasks · ${donePhases}/${phases.length} phases done`;
+    document.querySelectorAll("[data-std]").forEach((el) => {
+      const k = el.dataset.std, tasks = byStd[k] || [], st = stdStatus(tasks);
+      el.querySelector(".ours").innerHTML = `
+        <div class="oh"><span class="label">In our repo</span>${pill(st === "none" ? "none" : st, STD_LABEL[st])}</div>
+        ${tasks.length
+          ? `<ul>${tasks.map((t) => `<li><span class="mark ${t.status}" role="img" aria-label="${TASK_LABEL[t.status]}"></span><span>${esc(t.title)}<span class="ph">${esc(t.phase)}</span></span></li>`).join("")}</ul>`
+          : `<p class="gap">No task covers this yet. Add one to a phase in <code>progress.json</code> with <code>"std": ["${esc(k)}"]</code>.</p>`}`;
+    });
 
-    // ---- evolution
-    const eras = data.evolution || [];
-    const es = score(eras);
-    $("era-meter").innerHTML = meter(es);
-    $("era-pct").textContent = `${es.d}/${es.n}`;
-    $("era-list").innerHTML = eras.map((e, i) => `<li>
-        <span class="n">${String(i + 1).padStart(2, "0")}</span>
-        <strong>${esc(e.era)}<span class="when">${esc(e.when)}</span></strong>
-        ${pill(e.status)}
-        <span class="topics">${esc(e.topics)}</span>
-        ${e.note ? `<span class="note">${esc(e.note)}</span>` : ""}
-      </li>`).join("");
-    $("st-eras").textContent = `${es.d}/${es.n}`;
-    $("st-eras-s").textContent = es.p ? `covered · ${es.p} in progress` : "covered";
+    // ---- eras
+    (data.evolution || []).forEach((e, i) => {
+      const el = document.querySelector(`[data-era="${i}"] .ours`);
+      if (!el) return;
+      el.innerHTML = `<span class="label">Our repo</span>${pill(e.status === "todo" ? "none" : e.status, ERA_LABEL[e.status] || e.status)}${e.note ? `<span>${esc(e.note)}</span>` : ""}`;
+    });
 
-    // ---- open source
-    const os = data.openSource || { steps: [], contributions: [] };
-    $("os-steps").innerHTML = os.steps.map(taskItem).join("");
-    const contrib = os.contributions || [];
-    $("os-contrib").innerHTML = contrib.length
-      ? `<div class="tbl-wrap"><table class="contrib"><thead><tr><th>Date</th><th>Project</th><th>Contribution</th><th>Status</th></tr></thead><tbody>${
-          contrib.map((c) => `<tr><td class="date">${esc(c.date ? fmtDate(c.date) : "")}</td><td>${esc(c.project)}</td><td>${c.link ? `<a href="${esc(c.link)}" target="_blank" rel="noopener">${esc(c.title)}</a>` : esc(c.title)}${c.type ? ` <span class="label">${esc(c.type)}</span>` : ""}</td><td>${esc(c.status)}</td></tr>`).join("")
-        }</tbody></table></div>`
-      : `<div class="empty"><h3 style="font-size:1.1rem">No contributions yet</h3><p>Each merged PR, issue or release will show up here with its project, type and link. Add one to <code>openSource.contributions</code> in progress.json.</p></div>`;
-    const merged = contrib.filter((c) => /merged|done/i.test(c.status || "")).length;
-    const oss = score(os.steps);
-    $("st-os").textContent = String(merged);
-    $("st-os-s").textContent = `merged · plan ${oss.d}/${oss.n} steps`;
+    // ---- goals
+    const allTasks = phases.flatMap((p) => p.tasks);
+    const os = (data.openSource || {}).steps || [];
+    const meter = (s) => `<span class="meter"><span class="d" style="width:${s.dPct}%"></span><span class="p" style="width:${s.pPct}%"></span></span>`;
+    $("goals").innerHTML = [
+      ["Agentic AI phases", "progress.html#phases", score(allTasks)],
+      ["Evolution of agentic AI", "progress.html#evolution", score(data.evolution || [])],
+      ["Open source work", "progress.html#open-source", score(os)],
+    ].map(([n, h, s]) => `<a class="goal" href="${h}"><span class="gname">${n}</span>${meter(s)}<span class="pct">${s.pct}%</span></a>`).join("");
 
-    // ---- goal cards
-    const nextTask = allTasks.find((t) => t.status === "progress") || allTasks.find((t) => t.status === "todo");
-    const nextEra = eras.find((e) => e.status === "progress") || eras.find((e) => e.status === "todo");
-    const nextOs = os.steps.find((t) => t.status !== "done");
-    const goals = [
-      { n: "Goal 1", h: "Agentic AI phases", href: "#phases", p: "Build every layer of an agent by hand, from a neuron to multi-agent systems.", s: ps, st: statusOf(allTasks), now: nextTask && (phases[currentIdx] ? `${phases[currentIdx].project}: ` : "") + nextTask.title },
-      { n: "Goal 2", h: "Evolution of AI agents", href: "#evolution", p: "Understand why modern agents look the way they do, era by era.", s: es, st: statusOf(eras), now: nextEra && nextEra.era },
-      { n: "Goal 3", h: "Open source work", href: "#open-source", p: "Contribute to real AI projects and publish our own work.", s: oss, st: statusOf(os.steps), now: nextOs && nextOs.title },
-    ];
-    $("goals").innerHTML = goals.map((g) => `<a class="goal" href="${g.href}">
-        <span class="top"><span class="num">${g.n}</span>${pill(g.st)}</span>
-        <h3>${esc(g.h)}</h3>
-        <p>${esc(g.p)}</p>
-        <span class="meter-row"><span class="meter">${meter(g.s)}</span><span class="pct">${g.s.pct}%</span></span>
-        ${g.now ? `<span class="now"><b>Now</b>${esc(g.now)}</span>` : ""}
-      </a>`).join("");
-
-    // ---- milestones
-    $("log-list").innerHTML = (data.log || []).map((l) => `<li><time datetime="${esc(l.date)}">${esc(fmtDate(l.date))}</time><span class="dot"></span><div><span class="tag">${esc(l.track)}</span>${esc(l.text)}</div></li>`).join("");
-  }
-
-  function relTime(iso) {
-    const s = (Date.now() - new Date(iso)) / 1000;
-    if (s < 3600) return `${Math.max(1, Math.round(s / 60))} min ago`;
-    if (s < 86400) return `${Math.round(s / 3600)} h ago`;
-    if (s < 86400 * 30) return `${Math.round(s / 86400)} days ago`;
-    return fmtDate(iso, { month: "short", day: "numeric", year: "numeric" });
-  }
-
-  async function loadCommits() {
-    const list = $("commit-list");
-    try {
-      const res = await fetch(`https://api.github.com/repos/${REPO}/commits?per_page=8`, { headers: { Accept: "application/vnd.github+json" } });
-      if (!res.ok) throw new Error(res.status === 403 ? "GitHub's hourly rate limit was reached. Reload in a while." : `GitHub returned ${res.status}.`);
-      const commits = await res.json();
-      const link = res.headers.get("Link") || "";
-      const last = link.match(/[?&]page=(\d+)>; rel="last"/);
-      list.innerHTML = commits.map((c) => `<li>
-          <a class="msg" href="${esc(c.html_url)}" target="_blank" rel="noopener">${esc(c.commit.message.split("\n")[0].trim() || "(no message)")}</a>
-          <span class="sha">${esc(c.sha.slice(0, 7))}</span>
-          <span class="by">${esc(c.author?.login || c.commit.author.name)} · ${esc(relTime(c.commit.author.date))}</span>
-        </li>`).join("");
-      // per_page=8, so the last page number × 8 bounds the total; refetch with per_page=1 for an exact count
-      if (last) {
-        const r1 = await fetch(`https://api.github.com/repos/${REPO}/commits?per_page=1`);
-        const m = (r1.headers.get("Link") || "").match(/[?&]page=(\d+)>; rel="last"/);
-        $("st-commits").textContent = m ? m[1] : "–";
-      } else {
-        $("st-commits").textContent = String(commits.length);
-      }
-      if (commits[0]) $("st-commits-s").textContent = `last ${relTime(commits[0].commit.author.date)}`;
-    } catch (err) {
-      list.innerHTML = `<li><span class="state">Couldn't load commits. ${esc(err.message || "")} <a href="https://github.com/${esc(REPO)}/commits/main" target="_blank" rel="noopener">See them on GitHub</a>.</span></li>`;
-      $("st-commits-s").textContent = "GitHub unavailable";
-    }
+    if (data.updated) $("updated").textContent = "Progress updated " + new Date(data.updated + "T12:00:00").toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
   }
 
   fetch("progress.json", { cache: "no-cache" })
     .then((r) => { if (!r.ok) throw new Error(`progress.json returned ${r.status}`); return r.json(); })
     .then(render)
     .catch((err) => {
+      $("matrix-sum").textContent = "Unavailable";
       const box = $("load-error");
       box.hidden = false;
       box.textContent = location.protocol === "file:"
-        ? "Progress data can't load from a file:// page. Preview the site with `vercel dev` or `npx serve` from the NJRProjects folder."
-        : `Progress data didn't load (${err.message}). Check that progress.json is valid JSON.`;
-    })
-    .finally(loadCommits);
+        ? "Repo data can't load from a file:// page. Preview the site with `vercel dev` or `npx serve` from the NJRProjects folder."
+        : `Repo data didn't load (${err.message}). Check that progress.json is valid JSON.`;
+    });
 })();
 </script>
 </body>
