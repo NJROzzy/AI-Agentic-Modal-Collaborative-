@@ -1,0 +1,109 @@
+{
+  "updated": "2026-10-09",
+  "repo": "NJROzzy/AI-Agentic-Modal-Collaborative-",
+  "_status_values": "done | progress | todo",
+
+  "phases": [
+    {
+      "id": "foundations",
+      "name": "Foundations",
+      "project": "PyTorch Engine",
+      "path": "Collabe-work/PyTorch_Engine",
+      "summary": "PyTorch fundamentals before any agent work: tensors, autograd, nn.Module, training loops.",
+      "tasks": [
+        { "title": "Tensors: scalars, vectors, matrices, shapes", "status": "progress", "link": "Collabe-work/PyTorch_Engine/notebooks/week1_tensors_foundations.ipynb" },
+        { "title": "Autograd", "status": "todo" },
+        { "title": "nn.Module, layers and activations", "status": "todo" },
+        { "title": "Loss functions and optimizers", "status": "todo" },
+        { "title": "Training loop and evaluation", "status": "todo" }
+      ]
+    },
+    {
+      "id": "genesis",
+      "name": "Neural net from scratch",
+      "project": "Genesis",
+      "path": "Collabe-work/Genesis",
+      "summary": "A neuron built with NumPy only: no torch, no autograd. The forward pass, loss and gradients are written by hand.",
+      "tasks": [
+        { "title": "Forward pass: weighted sum + sigmoid", "status": "done", "link": "Collabe-work/Genesis/njr_neuron_from_scratch.ipynb" },
+        { "title": "MSE loss", "status": "done", "link": "Collabe-work/Genesis/njr_neuron_from_scratch.ipynb" },
+        { "title": "Manual backprop + gradient descent", "status": "done", "link": "Collabe-work/Genesis/njr_neuron_from_scratch.ipynb" },
+        { "title": "Train a neuron on the OR gate", "status": "done", "link": "Collabe-work/Genesis/njr_neuron_from_scratch.ipynb" },
+        { "title": "Show a single neuron can't learn XOR", "status": "done", "link": "Collabe-work/Genesis/njr_xor_single_neuron.ipynb" },
+        { "title": "2-layer network solves XOR (live demo)", "status": "done", "link": "xor-live-demo.html" },
+        { "title": "Compare with SA's version", "status": "todo" }
+      ]
+    },
+    {
+      "id": "awaken",
+      "name": "First agent",
+      "project": "Awaken",
+      "path": "Collabe-work/Genesis/Awaken",
+      "summary": "A one-week sprint: the loop, tools and decisions that turn a language model into something that acts.",
+      "tasks": [
+        { "title": "Scope, architecture, tool selection, env setup", "status": "progress", "link": "Collabe-work/Genesis/Awaken/README.md" },
+        { "title": "Core reasoning loop: think → act → observe", "status": "todo" },
+        { "title": "2–3 tools the agent can call", "status": "todo" },
+        { "title": "Memory across steps within a task", "status": "todo" },
+        { "title": "Error handling for failed tool calls", "status": "todo" },
+        { "title": "End-to-end demo scenario", "status": "todo" }
+      ]
+    },
+    {
+      "id": "multi-agent",
+      "name": "Multi-agent systems",
+      "project": "Not named yet",
+      "path": "",
+      "summary": "Several agents working together. Scope will be set once Awaken ships.",
+      "tasks": [
+        { "title": "Planner / worker pattern", "status": "todo" },
+        { "title": "Shared memory and message passing", "status": "todo" },
+        { "title": "Joint demo with SA", "status": "todo" }
+      ]
+    },
+    {
+      "id": "ship",
+      "name": "Evaluate & ship",
+      "project": "Not named yet",
+      "path": "",
+      "summary": "Measure how well the agents work, then package and publish them.",
+      "tasks": [
+        { "title": "Evaluation harness for agent tasks", "status": "todo" },
+        { "title": "Deploy a public demo", "status": "todo" },
+        { "title": "Write up what we learned", "status": "todo" }
+      ]
+    }
+  ],
+
+  "evolution": [
+    { "era": "Symbolic & rule-based agents", "when": "1950s–80s", "topics": "Logic, search, planning (STRIPS), expert systems", "status": "todo", "note": "" },
+    { "era": "The intelligent-agent framing", "when": "1990s", "topics": "Perceive → decide → act, BDI agents, early multi-agent systems", "status": "todo", "note": "" },
+    { "era": "Learning agents", "when": "1990s–2010s", "topics": "Reinforcement learning, TD-learning, deep RL (DQN, AlphaGo)", "status": "todo", "note": "" },
+    { "era": "Neural networks to Transformers", "when": "1958–2017", "topics": "Perceptron → backprop → deep learning → attention", "status": "progress", "note": "Genesis covers the perceptron and backprop by hand, and why one neuron can't learn XOR." },
+    { "era": "LLMs as reasoners", "when": "2018–2022", "topics": "Prompting, chain-of-thought", "status": "todo", "note": "" },
+    { "era": "LLM agents", "when": "2022–", "topics": "ReAct, tool use and function calling, RAG, memory", "status": "todo", "note": "" },
+    { "era": "Frameworks & protocols", "when": "2023–", "topics": "Orchestration frameworks, Model Context Protocol (MCP), computer use", "status": "todo", "note": "" },
+    { "era": "Multi-agent & autonomous systems", "when": "2024–", "topics": "Planner/worker patterns, evaluation, safety", "status": "todo", "note": "" }
+  ],
+
+  "openSource": {
+    "steps": [
+      { "title": "Pick 2–3 target projects (agent frameworks, PyTorch ecosystem, MCP servers)", "status": "todo" },
+      { "title": "Read each contributing guide and set the project up locally", "status": "todo" },
+      { "title": "Start with docs fixes and good-first-issue labels", "status": "todo" },
+      { "title": "Land a first merged PR", "status": "todo" },
+      { "title": "Publish Genesis and Awaken as documented open source", "status": "todo" }
+    ],
+    "contributions": []
+  },
+
+  "log": [
+    { "date": "2026-10-09", "track": "Site", "text": "Launched this progress tracker on Vercel." },
+    { "date": "2026-09-14", "track": "Phases", "text": "Wrote the Awaken plan, the first from-scratch agent sprint." },
+    { "date": "2026-09-12", "track": "Phases", "text": "Confirmed a single neuron can't learn XOR and built the live demo." },
+    { "date": "2026-09-11", "track": "Phases", "text": "Trained a neuron from scratch on the OR gate." },
+    { "date": "2026-09-10", "track": "Phases", "text": "Kicked off Genesis with SA." },
+    { "date": "2026-09-07", "track": "Phases", "text": "Started PyTorch Engine week 1: tensors." },
+    { "date": "2026-09-05", "track": "Setup", "text": "Created the collaborative repo with SA." }
+  ]
+}
