@@ -1,0 +1,832 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Agent Playground · NJR Projects</title>
+<meta name="description" content="Watch an agent think: an interactive agent loop with real tools, JSON tool calls and a human-approval checkpoint, plus a hand-built neuron you can train.">
+<meta name="color-scheme" content="light dark">
+<meta property="og:title" content="Agent Playground · NJR Projects">
+<meta property="og:description" content="Watch an agent think: an interactive agent loop with real tools, JSON tool calls and a human-approval checkpoint, plus a hand-built neuron you can train.">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%233442C9'/%3E%3Ccircle cx='16' cy='16' r='5' fill='%23fff'/%3E%3Cpath d='M4 9l7 5M4 23l7-5M28 16h-7' stroke='%23fff' stroke-width='2.2' stroke-linecap='round'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+  /* Layout: one 1080px column. Summary first (stats + three goal cards),
+     then one section per goal, then live repo activity. All content comes from progress.json. */
+  :root {
+    --bg: #F2F4F9;
+    --surface: #FFFFFF;
+    --line: #D7DCEA;
+    --fg: #161A2E;
+    --muted: #5A6180;
+    --accent: #3442C9;
+    --accent-soft: #E3E6FB;
+    --signal: #B8621A;
+    --done: #1F7A57;
+    --done-soft: #DDF1E8;
+    --progress: #9A5B08;
+    --progress-soft: #F8EBD6;
+    --idle: #6B7290;
+    --idle-soft: #E6E8F0;
+
+    --display: "Bricolage Grotesque", "Avenir Next", "Segoe UI", system-ui, sans-serif;
+    --body: "Atkinson Hyperlegible", "Helvetica Neue", Arial, sans-serif;
+    --mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0E1120; --surface: #161A2E; --line: #2A3050; --fg: #E9EBF6; --muted: #9AA0BF;
+      --accent: #93A0FF; --accent-soft: #232A55; --signal: #F0A857;
+      --done: #5FD3A3; --done-soft: #15362B; --progress: #F0B860; --progress-soft: #3A2C14;
+      --idle: #9AA0BF; --idle-soft: #232740;
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #0E1120; --surface: #161A2E; --line: #2A3050; --fg: #E9EBF6; --muted: #9AA0BF;
+    --accent: #93A0FF; --accent-soft: #232A55; --signal: #F0A857;
+    --done: #5FD3A3; --done-soft: #15362B; --progress: #F0B860; --progress-soft: #3A2C14;
+    --idle: #9AA0BF; --idle-soft: #232740;
+    color-scheme: dark;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } * { transition: none !important; } }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--fg);
+    font-family: var(--body);
+    font-size: 17px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap { max-width: 1080px; margin: 0 auto; padding-inline: 20px; }
+
+  a { color: var(--accent); text-underline-offset: 3px; }
+  a:focus-visible, button:focus-visible, summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
+
+  h1, h2, h3 { font-family: var(--display); line-height: 1.1; margin: 0; text-wrap: balance; }
+  p { margin: 0; }
+  code { font-family: var(--mono); font-size: 0.85em; }
+
+  .label {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  /* ---------- top bar ---------- */
+  .topbar {
+    position: sticky;
+    top: env(safe-area-inset-top, 0px);
+    z-index: 5;
+    background: color-mix(in srgb, var(--bg) 88%, transparent);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--line);
+  }
+  .topbar .wrap { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-block: 12px; flex-wrap: wrap; }
+  .brand { font-family: var(--display); font-weight: 800; font-size: 1.1rem; color: var(--fg); text-decoration: none; letter-spacing: -0.01em; }
+  .brand span { color: var(--accent); }
+  .topbar nav { display: flex; gap: 18px; flex-wrap: wrap; }
+  .topbar nav a { font-family: var(--mono); font-size: 0.8rem; color: var(--muted); text-decoration: none; }
+  .topbar nav a:hover { color: var(--accent); }
+
+  /* ---------- hero ---------- */
+  .hero { padding-block: 48px 36px; }
+  .hero h1 { font-size: clamp(2.1rem, 5.6vw, 3.8rem); font-weight: 800; letter-spacing: -0.03em; max-width: 18ch; margin-top: 12px; }
+  .hero h1 em { font-style: normal; color: var(--accent); }
+  .hero .lede { margin-top: 16px; max-width: 64ch; color: var(--muted); font-size: 1.05rem; }
+
+  .stats { margin-top: 32px; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); border: 1px solid var(--line); border-radius: 10px; background: var(--surface); }
+  .stat { padding: 16px 18px; border-left: 1px solid var(--line); min-width: 0; display: flex; flex-direction: column; gap: 4px; }
+  .stat:first-child { border-left: none; }
+  .stat .v { font-family: var(--display); font-weight: 700; font-size: 1.9rem; line-height: 1.1; font-variant-numeric: tabular-nums; }
+  .stat .s { font-size: 0.85rem; color: var(--muted); }
+  @media (max-width: 760px) {
+    .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .stat:nth-child(3) { border-left: none; }
+    .stat:nth-child(n+3) { border-top: 1px solid var(--line); }
+  }
+
+  /* ---------- shared bits ---------- */
+  .pill {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-family: var(--mono); font-size: 0.72rem; font-weight: 500;
+    padding: 3px 9px; border-radius: 999px; white-space: nowrap;
+  }
+  .pill::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+  .pill.done { color: var(--done); background: var(--done-soft); }
+  .pill.progress { color: var(--progress); background: var(--progress-soft); }
+  .pill.todo { color: var(--idle); background: var(--idle-soft); }
+
+  .meter { height: 6px; border-radius: 999px; background: var(--idle-soft); overflow: hidden; display: flex; }
+  .meter .d { background: var(--done); }
+  .meter .p { background: var(--progress); }
+  .meter-row { display: flex; align-items: center; gap: 12px; }
+  .meter-row .meter { flex: 1; }
+  .meter-row .pct { font-family: var(--mono); font-size: 0.8rem; color: var(--muted); font-variant-numeric: tabular-nums; min-width: 3.2em; text-align: right; }
+
+  section.block { padding-block: 52px; border-top: 1px solid var(--line); }
+  .head { display: flex; flex-direction: column; gap: 8px; margin-bottom: 26px; max-width: 64ch; }
+  .head h2 { font-size: clamp(1.6rem, 3.6vw, 2.2rem); font-weight: 700; letter-spacing: -0.02em; }
+  .head p { color: var(--muted); }
+
+  /* ---------- goal cards ---------- */
+  .goals { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; margin-top: 16px; }
+  @media (max-width: 860px) { .goals { grid-template-columns: 1fr; } }
+  .goal { display: flex; flex-direction: column; gap: 12px; padding: 20px; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; color: inherit; text-decoration: none; min-width: 0; transition: border-color .15s; }
+  .goal:hover { border-color: var(--accent); }
+  .goal .top { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+  .goal .num { font-family: var(--mono); font-size: 0.8rem; color: var(--accent); }
+  .goal h3 { font-size: 1.25rem; }
+  .goal p { color: var(--muted); font-size: 0.93rem; }
+  .goal .now { font-size: 0.88rem; color: var(--fg); }
+  .goal .now b { font-family: var(--mono); font-weight: 500; font-size: 0.72rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; margin-right: 6px; }
+
+  /* ---------- phases ---------- */
+  .phases { display: flex; flex-direction: column; gap: 14px; }
+  .phase { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; }
+  .phase.current { border-color: var(--accent); }
+  .phase summary { list-style: none; cursor: pointer; padding: 18px 20px; display: grid; grid-template-columns: 3.2rem minmax(0, 1fr) auto; gap: 6px 16px; align-items: center; }
+  .phase summary::-webkit-details-marker { display: none; }
+  .phase .pn { grid-row: span 2; font-family: var(--display); font-weight: 800; font-size: 1.9rem; color: var(--accent); line-height: 1; }
+  .phase .pt { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px; min-width: 0; }
+  .phase .pt h3 { font-size: 1.2rem; }
+  .phase .pt .proj { font-family: var(--mono); font-size: 0.78rem; color: var(--muted); }
+  .phase .pm { grid-column: 2 / 4; }
+  .phase .chev { font-family: var(--mono); color: var(--muted); transition: transform .15s; }
+  .phase[open] .chev { transform: rotate(90deg); }
+  .phase .body { padding: 0 20px 20px calc(20px + 3.2rem + 16px); display: flex; flex-direction: column; gap: 14px; }
+  @media (max-width: 560px) {
+    .phase summary { grid-template-columns: 2.2rem minmax(0, 1fr) auto; }
+    .phase .pn { font-size: 1.5rem; }
+    .phase .body { padding-left: 20px; }
+  }
+  .phase .body > p { color: var(--muted); font-size: 0.95rem; max-width: 70ch; }
+
+  .tasks { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px 24px; }
+  @media (max-width: 760px) { .tasks { grid-template-columns: 1fr; } }
+  .tasks li { display: grid; grid-template-columns: 18px minmax(0, 1fr); gap: 10px; align-items: baseline; font-size: 0.95rem; }
+  .mark { width: 14px; height: 14px; border-radius: 4px; border: 1.5px solid var(--idle); display: inline-grid; place-items: center; transform: translateY(2px); }
+  .mark.done { background: var(--done); border-color: var(--done); }
+  .mark.done::after { content: ""; width: 7px; height: 4px; border-left: 2px solid var(--surface); border-bottom: 2px solid var(--surface); transform: rotate(-45deg) translate(1px, -1px); }
+  .mark.progress { border-color: var(--progress); background: linear-gradient(90deg, var(--progress) 50%, transparent 50%); }
+  .tasks li.done span.t { color: var(--muted); }
+  .tasks a { word-break: break-word; }
+  .phase-docs { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 0.88rem; padding-top: 12px; border-top: 1px dashed var(--line); }
+  .phase-docs .label { width: 100%; font-size: 0.66rem; }
+  .std { display: inline-block; font-family: var(--mono); font-size: 0.68rem; color: var(--accent); background: var(--accent-soft); padding: 1px 7px; border-radius: 4px; margin-left: 8px; text-decoration: none; white-space: nowrap; vertical-align: 1px; }
+  .std:hover { text-decoration: underline; }
+
+  /* ---------- evolution ---------- */
+  .eras { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 32px; }
+  @media (max-width: 760px) { .eras { grid-template-columns: 1fr; } }
+  .eras li { display: grid; grid-template-columns: 2.2rem minmax(0, 1fr) auto; gap: 4px 12px; padding-block: 14px; border-bottom: 1px solid var(--line); align-items: baseline; }
+  .eras .n { grid-row: span 3; font-family: var(--mono); font-size: 0.8rem; color: var(--accent); }
+  .eras strong { font-family: var(--display); font-size: 1.05rem; }
+  .eras .when { font-family: var(--mono); font-size: 0.75rem; color: var(--muted); margin-left: 6px; font-weight: 400; white-space: nowrap; }
+  .eras .topics { grid-column: 2 / 4; color: var(--muted); font-size: 0.92rem; }
+  .eras .note { grid-column: 2 / 4; font-size: 0.92rem; border-left: 2px solid var(--accent); padding-left: 10px; }
+
+  /* ---------- open source ---------- */
+  .os { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); gap: 28px; align-items: start; }
+  @media (max-width: 820px) { .os { grid-template-columns: 1fr; } }
+  .os .tasks { grid-template-columns: 1fr; }
+  .empty { padding: 22px; border: 1px dashed var(--line); border-radius: 10px; display: flex; flex-direction: column; gap: 8px; }
+  .empty p { color: var(--muted); font-size: 0.95rem; }
+  .tbl-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); }
+  table.contrib { width: 100%; border-collapse: collapse; font-size: 0.92rem; }
+  table.contrib th { text-align: left; font-family: var(--mono); font-size: 0.7rem; font-weight: 500; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); padding: 10px 14px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+  table.contrib td { padding: 10px 14px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  table.contrib tr:last-child td { border-bottom: none; }
+  table.contrib td.date { font-family: var(--mono); font-size: 0.8rem; color: var(--muted); white-space: nowrap; }
+
+  /* ---------- activity ---------- */
+  .activity { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 28px; align-items: start; }
+  @media (max-width: 820px) { .activity { grid-template-columns: 1fr; } }
+  .col-head { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; margin-bottom: 12px; flex-wrap: wrap; }
+  .col-head h3 { font-size: 1.15rem; }
+  .commits { list-style: none; margin: 0; padding: 0; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); }
+  .commits li { padding: 12px 16px; border-bottom: 1px solid var(--line); display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 2px 12px; }
+  .commits li:last-child { border-bottom: none; }
+  .commits .msg { color: var(--fg); text-decoration: none; font-weight: 700; overflow-wrap: anywhere; }
+  .commits .msg:hover { color: var(--accent); }
+  .commits .sha { font-family: var(--mono); font-size: 0.75rem; color: var(--accent); }
+  .commits .by { grid-column: 1 / 3; font-size: 0.85rem; color: var(--muted); }
+  .commits .state { padding: 16px; color: var(--muted); font-size: 0.92rem; display: block; }
+
+  .log { list-style: none; margin: 0; padding: 0; position: relative; }
+  .log::before { content: ""; position: absolute; left: 5.7rem; top: 10px; bottom: 10px; width: 1px; background: var(--line); }
+  .log li { display: grid; grid-template-columns: 5rem 1.4rem minmax(0, 1fr); align-items: baseline; padding-block: 8px; }
+  .log time { font-family: var(--mono); font-size: 0.8rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+  .log .dot { width: 9px; height: 9px; border-radius: 50%; background: var(--accent); justify-self: center; box-shadow: 0 0 0 4px var(--bg); }
+  .log .tag { font-family: var(--mono); font-size: 0.72rem; color: var(--accent); margin-right: 6px; }
+
+  .links-row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 18px; }
+  .btn { display: inline-block; font-family: var(--mono); font-size: 0.8rem; text-decoration: none; padding: 8px 14px; border-radius: 6px; border: 1px solid var(--line); color: var(--fg); background: var(--surface); }
+  .btn:hover { border-color: var(--accent); color: var(--accent); }
+
+  .notice { padding: 14px 16px; border: 1px solid var(--signal); border-radius: 8px; color: var(--fg); font-size: 0.92rem; margin-top: 20px; }
+
+  footer { border-top: 1px solid var(--line); padding-block: 28px 40px; color: var(--muted); font-size: 0.88rem; }
+  footer .wrap { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+
+  /* ---------- playground ---------- */
+  .pg { display: grid; grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr); gap: 18px; align-items: start; }
+  @media (max-width: 900px) { .pg { grid-template-columns: 1fr; } }
+  .panel { background: color-mix(in srgb, var(--surface) 92%, transparent); border: 1px solid var(--line); border-radius: 12px; padding: 18px; display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+  .panel h3 { font-size: 1.05rem; }
+  .panel .hint { font-size: 0.85rem; color: var(--muted); }
+  .goal-in { display: flex; gap: 8px; }
+  .goal-in input { flex: 1; min-width: 0; font: inherit; font-size: 0.95rem; padding: 10px 12px; border-radius: 8px; border: 1px solid var(--line); background: var(--bg); color: var(--fg); }
+  .goal-in input:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chip { font: inherit; font-size: 0.83rem; padding: 6px 11px; border-radius: 999px; border: 1px solid var(--line); background: var(--bg); color: var(--fg); cursor: pointer; text-align: left; }
+  .chip:hover { border-color: var(--accent); color: var(--accent); }
+  .chip:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+  .row .grow { flex: 1; }
+  .tools-list { display: flex; flex-direction: column; gap: 6px; }
+  .tools-list details { border: 1px solid var(--line); border-radius: 8px; background: var(--bg); }
+  .tools-list summary { cursor: pointer; padding: 8px 12px; font-family: var(--mono); font-size: 0.8rem; display: flex; justify-content: space-between; gap: 8px; }
+  .tools-list summary .risk { color: var(--signal); }
+  .tools-list summary.used { color: var(--accent); }
+  .tools-list p { padding: 0 12px; font-size: 0.85rem; color: var(--muted); margin-bottom: 6px; }
+  pre.json { margin: 0; padding: 10px 12px; font-family: var(--mono); font-size: 0.76rem; line-height: 1.5; overflow-x: auto; color: var(--muted); background: color-mix(in srgb, var(--bg) 70%, #000 30%); border-radius: 0 0 8px 8px; }
+  pre.json .jk { color: var(--accent); }
+  pre.json .js { color: var(--done); }
+  pre.json .jn { color: var(--signal); }
+  .mem { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 6px 12px; font-size: 0.85rem; margin: 0; }
+  .mem dt { font-family: var(--mono); font-size: 0.75rem; color: var(--accent); padding-top: 2px; }
+  .mem dd { margin: 0; color: var(--fg); overflow-wrap: anywhere; }
+  .mem .fresh { animation: fresh 1.6s ease-out; }
+  @keyframes fresh { from { background: var(--accent-soft); } to { background: transparent; } }
+
+  .trace { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; min-height: 280px; }
+  .ev { display: grid; grid-template-columns: 5.4rem minmax(0, 1fr); gap: 10px; animation: rise .25s ease-out; }
+  @keyframes rise { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+  @media (prefers-reduced-motion: reduce) { .ev, .mem .fresh { animation: none; } }
+  .ev .k { font-family: var(--mono); font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.08em; padding-top: 3px; }
+  .ev .body { min-width: 0; display: flex; flex-direction: column; gap: 6px; font-size: 0.93rem; }
+  .ev .body pre.json { border-radius: 8px; }
+  .ev.goal .k { color: var(--fg); } .ev.goal .body { font-weight: 700; }
+  .ev.plan .k, .ev.think .k { color: var(--muted); }
+  .ev.act .k { color: var(--accent); }
+  .ev.observe .k { color: var(--done); }
+  .ev.error .k { color: var(--v-late); } .ev.error .body { color: var(--v-late); }
+  .ev.review .k { color: var(--progress); }
+  .ev.approve .k { color: var(--signal); }
+  .ev.answer .k { color: var(--fg); }
+  .ev.answer .body { padding: 12px 14px; border-radius: 10px; background: var(--accent-soft); color: var(--fg); font-size: 0.98rem; line-height: 1.55; }
+  .ev.answer .body a { color: var(--accent); }
+  .ev ol { margin: 0; padding-left: 1.2em; color: var(--muted); }
+  .gate { border: 1px solid var(--signal); border-radius: 10px; padding: 12px 14px; display: flex; flex-direction: column; gap: 10px; background: color-mix(in srgb, var(--signal) 8%, transparent); }
+  .gate .row button { font: inherit; font-size: 0.85rem; padding: 7px 14px; border-radius: 6px; cursor: pointer; border: 1px solid var(--line); background: var(--bg); color: var(--fg); }
+  .gate .row button.ok { background: var(--done); border-color: var(--done); color: var(--bg); font-weight: 700; }
+  .gate .row button:disabled { opacity: .5; cursor: default; }
+  .trace-empty { color: var(--muted); font-size: 0.92rem; }
+  .sim-note { font-size: 0.8rem; color: var(--muted); border-top: 1px dashed var(--line); padding-top: 10px; }
+
+  /* neuron */
+  .np { display: grid; grid-template-columns: minmax(0, 360px) minmax(0, 1fr); gap: 24px; align-items: start; }
+  @media (max-width: 760px) { .np { grid-template-columns: 1fr; } }
+  .np canvas { width: 100%; max-width: 360px; aspect-ratio: 1; border-radius: 10px; border: 1px solid var(--line); display: block; }
+  .np-ctl { display: flex; flex-direction: column; gap: 14px; }
+  .eq { font-family: var(--mono); font-size: 1rem; color: var(--fg); padding: 10px 12px; border-radius: 8px; background: var(--bg); border: 1px solid var(--line); overflow-x: auto; white-space: nowrap; }
+  .slider { display: grid; grid-template-columns: 2.4rem minmax(0, 1fr) 3.4rem; gap: 10px; align-items: center; font-family: var(--mono); font-size: 0.85rem; }
+  .slider input { width: 100%; accent-color: var(--accent); }
+  .slider output { text-align: right; font-variant-numeric: tabular-nums; }
+  .seg { display: inline-flex; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
+  .seg button { font-family: var(--mono); font-size: 0.8rem; padding: 7px 14px; border: 0; background: var(--bg); color: var(--muted); cursor: pointer; }
+  .seg button[aria-pressed="true"] { background: var(--accent); color: var(--bg); }
+  .seg button:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+  .np-stats { display: flex; gap: 22px; flex-wrap: wrap; }
+  .np-stats div { display: flex; flex-direction: column; }
+  .np-stats .v { font-family: var(--display); font-weight: 700; font-size: 1.5rem; font-variant-numeric: tabular-nums; }
+  .np-msg { font-size: 0.92rem; color: var(--fg); min-height: 1.5em; }
+</style>
+<link rel="stylesheet" href="viz.css">
+<link rel="stylesheet" href="fx.css">
+<script src="viz.js"></script>
+<script src="fx.js"></script>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="wrap">
+    <a class="brand" href="index.html">NJR<span>/</span>Projects</a>
+    <nav aria-label="Pages and sections">
+      <a href="index.html">Standards</a>
+      <a href="progress.html">Progress</a>
+      <a href="plan.html">Plan</a>
+      <a href="#agent">Agent loop</a>
+      <a href="#neuron">Neuron</a>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+  <section class="hero">
+    <div class="wrap">
+      <p class="label">Playground</p>
+      <h1>Watch an agent <em>think.</em></h1>
+      <div id="voice"></div>
+      <p class="lede" style="margin-top:22px">Two experiments from our build path. The first is an agent loop: give it a goal and watch it plan, call tools with JSON arguments, recover from errors, and stop for your approval before it changes anything. The second is the single neuron that Genesis built by hand.</p>
+    </div>
+  </section>
+
+  <section class="block" id="agent">
+    <div class="wrap">
+      <div class="head">
+        <p class="label">Experiment 1</p>
+        <h2>The agent loop</h2>
+        <p>Goal → plan → act → observe → review → answer. The tools are real: they read this site's progress data, its docs list and the GitHub repo.</p>
+      </div>
+      <div class="pg">
+        <div class="panel">
+          <h3>Mission control</h3>
+          <form class="goal-in" id="goal-form">
+            <label for="goal" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Goal for the agent</label>
+            <input id="goal" name="goal" autocomplete="off" placeholder="Give the agent a goal…" value="Plan how we implement the MCP standard">
+            <button class="fx-btn primary" type="submit">Run</button>
+          </form>
+          <div class="chips" id="presets"></div>
+          <div class="row">
+            <button class="fx-btn" id="speak-toggle" type="button" aria-pressed="false">Speak answers</button>
+            <button class="fx-btn" id="reset" type="button">Clear memory</button>
+          </div>
+          <div>
+            <h3 style="margin-bottom:8px">Tools</h3>
+            <div class="tools-list" id="tools"></div>
+          </div>
+          <div>
+            <h3 style="margin-bottom:8px">Scratchpad memory</h3>
+            <dl class="mem" id="mem"><dt>empty</dt><dd style="color:var(--muted)">Facts the agent learns stay here between goals until you clear them.</dd></dl>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="row"><h3 class="grow">Trace</h3><span class="label" id="turn">turn 0</span></div>
+          <ol class="trace" id="trace"><li class="trace-empty">Pick a goal and press Run. Every step the agent takes will show up here.</li></ol>
+          <p class="sim-note">The tools and data are real. The planner is a small rule-based router, not an LLM, so it handles the goals above and close variations. Swapping the router for a Claude or GPT call is exactly what Awaken will do.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="neuron">
+    <div class="wrap">
+      <div class="head">
+        <p class="label">Experiment 2</p>
+        <h2>One neuron, by hand</h2>
+        <p>Move the weights and the bias and watch the neuron's line move. Then train it. It learns AND and OR, but no single line can separate XOR. That limit is why networks have layers.</p>
+      </div>
+      <div class="panel np">
+        <canvas id="np-canvas" width="720" height="720" role="img" aria-label="Decision boundary of a single neuron over the unit square, with the four training points"></canvas>
+        <div class="np-ctl">
+          <div class="row"><span class="label grow">Dataset</span><div class="seg" id="np-data" role="group" aria-label="Dataset"><button type="button" data-d="AND" aria-pressed="false">AND</button><button type="button" data-d="OR" aria-pressed="true">OR</button><button type="button" data-d="XOR" aria-pressed="false">XOR</button></div></div>
+          <div class="eq" id="np-eq">a = σ(w₁x₁ + w₂x₂ + b)</div>
+          <label class="slider"><span>w₁</span><input type="range" id="w1" min="-8" max="8" step="0.1" value="1"><output id="w1o">1.0</output></label>
+          <label class="slider"><span>w₂</span><input type="range" id="w2" min="-8" max="8" step="0.1" value="-1"><output id="w2o">-1.0</output></label>
+          <label class="slider"><span>b</span><input type="range" id="b" min="-8" max="8" step="0.1" value="0.5"><output id="bo">0.5</output></label>
+          <div class="row">
+            <button class="fx-btn primary" id="np-train" type="button">Train 2,000 steps</button>
+            <button class="fx-btn" id="np-rand" type="button">Randomize</button>
+          </div>
+          <div class="np-stats">
+            <div><span class="label">Loss (MSE)</span><span class="v" id="np-loss">–</span></div>
+            <div><span class="label">Correct</span><span class="v" id="np-acc">–</span></div>
+            <div><span class="label">Steps</span><span class="v" id="np-steps">0</span></div>
+          </div>
+          <p class="np-msg" id="np-msg"></p>
+          <p class="hint">Want to see the fix? The <a href="xor-live-demo.html">XOR live demo</a> trains a 2-layer network that bends the line.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>NJR &amp; SA · the agent's tools read <code>progress.json</code>, <code>tools.json</code> and GitHub</span>
+    <span class="label">Playground</span>
+  </div>
+</footer>
+
+<script>
+(function () {
+  const $ = (id) => document.getElementById(id);
+  const el = (tag, cls, text) => { const n = document.createElement(tag); if (cls) n.className = cls; if (text != null) n.textContent = text; return n; };
+  const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const wait = (ms) => new Promise((r) => setTimeout(r, reduce ? 0 : ms));
+  const iso = (d) => d.toISOString().slice(0, 10);
+  const fmt = (s) => new Date(s + "T12:00:00").toLocaleDateString("en-US", { month: "short", day: "numeric" });
+
+  // JSON with light syntax color. Text is escaped before any markup is added.
+  function jsonBlock(obj) {
+    const pre = el("pre", "json");
+    const esc = JSON.stringify(obj, null, 2).replace(/[&<>]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c]));
+    pre.innerHTML = esc
+      .replace(/("(?:\\.|[^"\\])*")(\s*:)/g, '<span class="jk">$1</span>$2')
+      .replace(/:\s*("(?:\\.|[^"\\])*")/g, (m, s) => m.replace(s, `<span class="js">${s}</span>`))
+      .replace(/([\[\s,])("(?:\\.|[^"\\])*")(?=\s*[,\]\n])/g, '$1<span class="js">$2</span>')
+      .replace(/:\s*(-?\d+(?:\.\d+)?|true|false|null)/g, (m, n) => m.replace(n, `<span class="jn">${n}</span>`));
+    return pre;
+  }
+
+  if (window.FX) FX.net(document.querySelector(".hero"));
+  const voice = window.FX ? FX.voice($("voice"), { name: "njr-agent", status: " · online · sandbox mode" }) : null;
+
+  // ================= Experiment 1: the agent loop =================
+  let DATA = null, TOOLS = null, turn = 0;
+  const memory = new Map();
+
+  // Each tool: description, JSON Schema for its arguments, and a run function.
+  const toolDefs = {
+    get_plan_week: {
+      description: "Stages from the execution plan that are active on a date, or the next ones to start.",
+      schema: { type: "object", properties: { date: { type: "string", format: "date" } }, required: ["date"] },
+      run: ({ date }) => {
+        const d = new Date(date + "T00:00:00");
+        const st = DATA.plan.stages;
+        let active = st.filter((s) => new Date(s.start + "T00:00:00") <= d && d <= new Date(s.end + "T23:59:59"));
+        let note = "active";
+        if (!active.length) { const ns = st.map((s) => s.start).filter((s) => s >= date).sort()[0]; active = st.filter((s) => s.start === ns); note = "next to start"; }
+        return { date, note, stages: active.map((s) => ({ title: s.title, start: s.start, end: s.end, first_steps: s.steps.slice(0, 2).map((x) => x.title + (x.owner ? ` (${x.owner})` : "")) })) };
+      },
+    },
+    get_standards_status: {
+      description: "Every 2026 agentic standard with how many of our tasks cover it and their status.",
+      schema: { type: "object", properties: {}, required: [] },
+      run: () => {
+        const tasks = DATA.phases.flatMap((p, i) => p.tasks.map((t) => ({ ...t, phase: `Phase ${i + 1} · ${p.name}` })));
+        return { standards: Object.entries(DATA.standards).map(([k, name]) => {
+          const ts = tasks.filter((t) => (t.std || []).includes(k));
+          const status = !ts.length ? "not_planned" : ts.every((t) => t.status === "done") ? "implemented" : ts.some((t) => t.status !== "todo") ? "in_progress" : "planned";
+          return { id: k, name, status, tasks: ts.map((t) => ({ title: t.title, phase: t.phase, status: t.status })) };
+        }) };
+      },
+    },
+    search_docs: {
+      description: "Search the curated tools-and-docs list by keyword.",
+      schema: { type: "object", properties: { query: { type: "string" }, limit: { type: "integer", minimum: 1, maximum: 5 } }, required: ["query"] },
+      run: ({ query, limit = 3 }) => {
+        const q = query.toLowerCase().split(/\s+/).filter(Boolean);
+        const all = TOOLS.categories.flatMap((c) => c.tools.map((t) => ({ ...t, category: c.name })));
+        const scored = all.map((t) => {
+          const hay = `${t.name} ${t.by} ${t.what} ${(t.std || []).join(" ")} ${t.category}`.toLowerCase();
+          return { t, s: q.reduce((n, w) => n + (hay.includes(w) ? (t.name.toLowerCase().includes(w) ? 3 : 1) : 0), 0) };
+        }).filter((x) => x.s > 0).sort((a, b) => b.s - a.s).slice(0, limit);
+        return { query, results: scored.map(({ t }) => ({ name: t.name, by: t.by, docs: t.docs })) };
+      },
+    },
+    get_repo_activity: {
+      description: "Recent commits from the GitHub repo.",
+      schema: { type: "object", properties: { limit: { type: "integer", minimum: 1, maximum: 10 } }, required: ["limit"] },
+      run: async ({ limit }) => {
+        const r = await fetch(`https://api.github.com/repos/${DATA.repo}/commits?per_page=${limit}`);
+        if (!r.ok) throw new Error(`GitHub returned ${r.status}`);
+        const cs = await r.json();
+        return { commits: cs.map((c) => ({ message: c.commit.message.split("\n")[0].trim(), author: c.author?.login || c.commit.author.name, when: FX ? FX.relTime(c.commit.author.date) : c.commit.author.date })) };
+      },
+    },
+    update_task_status: {
+      description: "Change a task's status. Writes data, so it needs human approval. Runs in a sandbox: changes stay in this browser tab.",
+      risky: true,
+      schema: { type: "object", properties: { title: { type: "string" }, status: { type: "string", enum: ["todo", "progress", "done"] } }, required: ["title", "status"] },
+      run: ({ title, status }) => {
+        const task = DATA.phases.flatMap((p) => p.tasks).find((t) => t.title.toLowerCase() === title.toLowerCase());
+        if (!task) throw new Error(`No task titled "${title}"`);
+        const before = task.status; task.status = status;
+        return { title: task.title, before, after: status, sandbox: true };
+      },
+    },
+  };
+
+  // Validate arguments against the tool's schema, the way function calling does.
+  function validate(name, args) {
+    const { schema } = toolDefs[name];
+    for (const r of schema.required || []) if (args[r] == null) return `missing required argument "${r}"`;
+    for (const [k, v] of Object.entries(args)) {
+      const p = schema.properties[k];
+      if (!p) return `unknown argument "${k}"`;
+      if (p.type === "string" && typeof v !== "string") return `"${k}" must be a string`;
+      if (p.type === "integer" && !Number.isInteger(v)) return `"${k}" must be an integer`;
+      if (p.enum && !p.enum.includes(v)) return `"${k}" must be one of ${p.enum.map((e) => `"${e}"`).join(", ")}, got "${v}"`;
+      if (p.maximum != null && v > p.maximum) return `"${k}" must be ≤ ${p.maximum}`;
+    }
+    return null;
+  }
+
+  // ---- trace UI
+  const trace = $("trace");
+  function ev(kind, label, content) {
+    if (trace.querySelector(".trace-empty")) trace.replaceChildren();
+    const li = el("li", "ev " + kind);
+    li.append(el("span", "k", label || kind));
+    const body = el("div", "body");
+    (Array.isArray(content) ? content : [content]).forEach((c) => body.append(typeof c === "string" ? el("span", null, c) : c));
+    li.append(body);
+    trace.append(li);
+    li.scrollIntoView({ block: "nearest", behavior: reduce ? "auto" : "smooth" });
+    return li;
+  }
+  function remember(key, value) {
+    memory.set(key, value);
+    const mem = $("mem"); mem.replaceChildren();
+    for (const [k, v] of memory) { const dt = el("dt", null, k), dd = el("dd", null, v); if (k === key) { dt.className = dd.className = "fresh"; } mem.append(dt, dd); }
+  }
+  function markUsed(name) { const s = document.querySelector(`[data-tool="${name}"]`); if (s) s.classList.add("used"); }
+
+  // Human-in-the-loop: resolves true or false when the person clicks.
+  function approval(name, args) {
+    return new Promise((resolve) => {
+      const gate = el("div", "gate");
+      gate.append(el("span", null, `The agent wants to run ${name}. This changes data.`), jsonBlock(args));
+      const row = el("div", "row");
+      const ok = el("button", "ok", "Approve"), no = el("button", null, "Deny");
+      ok.type = no.type = "button";
+      row.append(ok, no); gate.append(row);
+      ev("approve", "checkpoint", gate);
+      const done = (v) => { ok.disabled = no.disabled = true; gate.append(el("span", "label", v ? "Approved by you" : "Denied by you")); resolve(v); };
+      ok.addEventListener("click", () => done(true));
+      no.addEventListener("click", () => done(false));
+      ok.focus({ preventScroll: true });
+    });
+  }
+
+  // One tool call: act → (approval) → observe, with schema validation.
+  async function call(name, args) {
+    markUsed(name);
+    ev("act", "act", [`call ${name}`, jsonBlock({ name, arguments: args })]);
+    await wait(450);
+    const bad = validate(name, args);
+    if (bad) { ev("error", "error", `Invalid arguments: ${bad}.`); return { error: bad }; }
+    if (toolDefs[name].risky) {
+      const yes = await approval(name, args);
+      if (!yes) { ev("observe", "observe", "Not run. You denied the change."); return { denied: true }; }
+    }
+    try {
+      const out = await toolDefs[name].run(args);
+      const preview = JSON.parse(JSON.stringify(out));
+      if (preview.standards) preview.standards = preview.standards.map((s) => ({ name: s.name, status: s.status, tasks: s.tasks.length }));
+      ev("observe", "observe", jsonBlock(preview));
+      await wait(350);
+      return { out };
+    } catch (e) {
+      ev("error", "error", `Tool failed: ${e.message}`);
+      return { error: e.message };
+    }
+  }
+
+  // ---- the planner: routes a goal to a sequence of steps (rule-based stand-in for an LLM)
+  const presets = [
+    "Plan how we implement the MCP standard",
+    "What should we work on this week?",
+    "Which standards have no work planned?",
+    "Find docs for long-term memory",
+    "How active is the repo lately?",
+    "Mark Autograd as finished",
+  ];
+  function route(goal) {
+    const g = goal.toLowerCase();
+    const stdHit = Object.entries(DATA.standards).find(([k, n]) => g.includes(k) || g.includes(n.toLowerCase()) || (k === "mcp" && g.includes("model context")) || (k === "hitl" && g.includes("human")) || (k === "state" && g.includes("memory") && g.includes("implement")));
+    if (/\b(mark|set|update|finish(ed)?|complete(d)?)\b/.test(g)) return { kind: "update" };
+    if (stdHit && /(implement|build|plan|how)/.test(g)) return { kind: "standard", std: stdHit[0] };
+    if (/(standard|gap|missing|cover)/.test(g)) return { kind: "gaps" };
+    if (/(week|today|next|work on|start|plan)/.test(g)) return { kind: "week" };
+    if (/(doc|learn|read|tutorial|guide|find)/.test(g)) return { kind: "docs" };
+    if (/(commit|activ|github|recent|push)/.test(g)) return { kind: "activity" };
+    return { kind: "unknown" };
+  }
+
+  let running = false;
+  async function runGoal(goal) {
+    if (running || !DATA) return;
+    running = true; turn++;
+    $("turn").textContent = `turn ${turn}`;
+    trace.replaceChildren();
+    ev("goal", "goal", goal);
+    await wait(300);
+    const r = route(goal);
+    const today = iso(new Date());
+    let answer = null;
+
+    const plan = (steps) => { const ol = el("ol"); steps.forEach((s) => ol.append(el("li", null, s))); ev("plan", "plan", ol); };
+
+    if (r.kind === "standard") {
+      const name = DATA.standards[r.std];
+      plan([`Check how our repo covers ${name}`, "Find the docs to build it", "Find when it's scheduled", "Answer with a plan"]);
+      await wait(500);
+      const a = await call("get_standards_status", {});
+      const s = a.out.standards.find((x) => x.id === r.std);
+      remember("standard." + r.std, `${s.status} · ${s.tasks.length} tasks`);
+      ev("review", "review", `${name} is ${s.status.replace("_", " ")} with ${s.tasks.length} task${s.tasks.length === 1 ? "" : "s"}. I need docs next.`);
+      const kw = { mcp: "model context protocol mcp", acp: "agent communication protocol", fcall: "tool function calling json schema", multiagent: "multi-agent", state: "memory", m2m: "oauth", sandbox: "sandbox", hitl: "human interrupts" }[r.std];
+      const b = await call("search_docs", { query: kw, limit: 3 });
+      remember("docs." + r.std, b.out.results.map((x) => x.name).join(", ") || "none");
+      const phaseName = s.tasks[0]?.phase.split(" · ")[1];
+      const stage = DATA.plan.stages.find((st) => st.phase && DATA.phases.find((p) => p.id === st.phase)?.name === phaseName);
+      ev("review", "review", stage ? `The tasks sit in ${s.tasks[0].phase}. The plan schedules it ${fmt(stage.start)} – ${fmt(stage.end)}. I have enough to answer.` : "I couldn't find it in the plan. I'll answer with what I have.");
+      answer = { text: `To implement ${name}: ${s.tasks.map((t, i) => `${i + 1}) ${t.title}`).join(" ")}. ${stage ? `It's scheduled for ${fmt(stage.start)} – ${fmt(stage.end)} in "${stage.title}".` : ""} Start by reading `, links: b.out.results };
+    } else if (r.kind === "week") {
+      plan(["Get today's date", "Look up the stages active this week", "Summarize the first steps"]);
+      remember("today", today);
+      const a = await call("get_plan_week", { date: today });
+      const st = a.out.stages;
+      remember("this_week", st.map((s) => s.title).join(" · ") || "nothing scheduled");
+      ev("review", "review", st.length ? `${st.length} stages are ${a.out.note}. That answers the goal.` : "Nothing is scheduled.");
+      answer = { text: st.length ? `${a.out.note === "active" ? "This week" : `Starting ${fmt(st[0].start)}`}: ${st.map((s) => `${s.title} (first: ${s.first_steps[0]})`).join("; ")}.` : "Nothing is scheduled right now." };
+    } else if (r.kind === "gaps") {
+      plan(["Read every standard's coverage", "Pick out the ones with no tasks or no progress", "Answer"]);
+      const a = await call("get_standards_status", {});
+      const none = a.out.standards.filter((s) => s.status === "not_planned");
+      const notStarted = a.out.standards.filter((s) => s.status === "planned");
+      remember("standards.not_planned", none.map((s) => s.name).join(", ") || "none");
+      ev("review", "review", `${none.length} standards have no tasks. ${notStarted.length} have tasks that haven't started.`);
+      answer = { text: none.length ? `No work is planned for: ${none.map((s) => s.name).join(", ")}.` : `Every standard has planned work. None has started yet: ${notStarted.map((s) => s.name).join(", ")}. The first ones arrive with the Awaken sprint.` };
+    } else if (r.kind === "docs") {
+      const q = goal.replace(/^(find|show|get)?\s*(me\s*)?(the\s*)?(docs?|documentation|guides?)\s*(for|on|about)?\s*/i, "").replace(/[?.!]$/, "") || goal;
+      plan([`Search the docs list for "${q}"`, "Return the best matches"]);
+      const a = await call("search_docs", { query: q, limit: 3 });
+      remember("last_search", `${q} → ${a.out.results.length} results`);
+      ev("review", "review", a.out.results.length ? "Found matches. Done." : "No matches. I'll say so instead of guessing.");
+      answer = a.out.results.length ? { text: `For "${q}", start with: `, links: a.out.results } : { text: `I found nothing for "${q}" in our docs list.` };
+    } else if (r.kind === "activity") {
+      plan(["Fetch recent commits from GitHub", "Summarize the activity"]);
+      const a = await call("get_repo_activity", { limit: 20 });
+      if (a.error) {
+        ev("review", "review", "That limit was too high. Retrying with a valid value.");
+        await wait(400);
+        const b = await call("get_repo_activity", { limit: 5 });
+        if (b.out) { remember("last_commit", `${b.out.commits[0].message} · ${b.out.commits[0].when}`); answer = { text: `The last ${b.out.commits.length} commits: ${b.out.commits.map((c) => `"${c.message}" (${c.when})`).join(", ")}.` }; }
+        else answer = { text: "I couldn't reach GitHub just now." };
+      } else {
+        remember("last_commit", `${a.out.commits[0].message} · ${a.out.commits[0].when}`);
+        answer = { text: `The last ${a.out.commits.length} commits: ${a.out.commits.map((c) => `"${c.message}" (${c.when})`).join(", ")}.` };
+      }
+    } else if (r.kind === "update") {
+      const tasks = DATA.phases.flatMap((p) => p.tasks);
+      const g = goal.toLowerCase();
+      const task = tasks.find((t) => g.includes(t.title.toLowerCase())) || tasks.find((t) => t.title.toLowerCase().split(/[^a-z]+/).filter((w) => w.length > 4).some((w) => g.includes(w)));
+      if (!task) { plan(["Find the task to update"]); ev("review", "review", "I couldn't match that to a task, so I won't change anything."); answer = { text: "Name a task exactly as it appears on the progress page, for example \"Mark Autograd as finished\"." }; }
+      else {
+        const word = (g.match(/as (\w+)/) || [])[1] || "done";
+        plan([`Find the task "${task.title}"`, `Set its status to "${word}"`, "Get approval before writing"]);
+        const a = await call("update_task_status", { title: task.title, status: word });
+        let res = a;
+        if (a.error) {
+          ev("review", "review", `"${word}" isn't a valid status. The schema allows todo, progress or done. Retrying with "done".`);
+          await wait(400);
+          res = await call("update_task_status", { title: task.title, status: "done" });
+        }
+        if (res.out) { remember("sandbox.change", `${res.out.title}: ${res.out.before} → ${res.out.after}`); ev("review", "review", "Change applied in the sandbox. The real progress.json is untouched."); answer = { text: `Marked "${res.out.title}" as ${res.out.after} in this tab's sandbox. To make it real, edit progress.json and redeploy.` }; }
+        else answer = { text: "Nothing changed. You kept the human in the loop." };
+      }
+    } else {
+      plan(["Match the goal to my tools"]);
+      ev("review", "review", "None of my five tools fits this goal. I'd rather say so than make something up.");
+      answer = { text: "I can't do that with my tools. I can plan the week, check standards coverage, find docs, read repo activity, or update a task with your approval." };
+    }
+
+    if (answer) {
+      const body = [el("span", null, answer.text)];
+      if (answer.links) answer.links.forEach((l) => { const a = el("a", null, l.name + " ↗"); a.href = l.docs; a.target = "_blank"; a.rel = "noopener"; body.push(a); });
+      ev("answer", "answer", body);
+      if ($("speak-toggle").getAttribute("aria-pressed") === "true" && window.FX) FX.speak(answer.text + (answer.links ? " " + answer.links.map((l) => l.name).join(", ") + "." : ""));
+    }
+    running = false;
+  }
+
+  function setupAgent() {
+    const tl = $("tools");
+    Object.entries(toolDefs).forEach(([name, t]) => {
+      const d = el("details"), s = el("summary");
+      s.dataset.tool = name;
+      s.append(el("span", null, name + "()"), el("span", "risk", t.risky ? "needs approval" : ""));
+      d.append(s, el("p", null, t.description), jsonBlock({ name, description: t.description, input_schema: t.schema }));
+      tl.append(d);
+    });
+    const pr = $("presets");
+    presets.forEach((p) => { const b = el("button", "chip", p); b.type = "button"; b.addEventListener("click", () => { $("goal").value = p; runGoal(p); }); pr.append(b); });
+    $("goal-form").addEventListener("submit", (e) => { e.preventDefault(); const v = $("goal").value.trim(); if (v) runGoal(v); });
+    $("speak-toggle").addEventListener("click", (e) => { const on = e.currentTarget.getAttribute("aria-pressed") !== "true"; e.currentTarget.setAttribute("aria-pressed", String(on)); if (!on && window.FX) FX.stop(); });
+    if (!window.FX || !FX.canSpeak) { $("speak-toggle").disabled = true; $("speak-toggle").title = "This browser has no text-to-speech"; }
+    $("reset").addEventListener("click", () => { memory.clear(); $("mem").replaceChildren(el("dt", null, "empty"), el("dd", null, "Memory cleared.")); });
+  }
+
+  // ================= Experiment 2: one neuron =================
+  const sets = { AND: [0, 0, 0, 1], OR: [0, 1, 1, 1], XOR: [0, 1, 1, 0] };
+  const X = [[0, 0], [0, 1], [1, 0], [1, 1]];
+  let dataset = "OR", steps = 0, training = false;
+  const sig = (z) => 1 / (1 + Math.exp(-z));
+  const cv = $("np-canvas"), cx = cv.getContext("2d");
+  const css = (n) => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+  const hex = (h) => { const m = h.replace("#", ""); return [0, 2, 4].map((i) => parseInt(m.slice(i, i + 2), 16)); };
+  const W = () => ({ w1: +$("w1").value, w2: +$("w2").value, b: +$("b").value });
+  function setW({ w1, w2, b }) {
+    const c = (v) => Math.max(-8, Math.min(8, v));
+    $("w1").value = c(w1); $("w2").value = c(w2); $("b").value = c(b);
+  }
+  function drawNeuron() {
+    const { w1, w2, b } = W();
+    const lo = hex(css("--signal") || "#F0A857"), hi = hex(css("--done") || "#5FD3A3"), bg = hex(css("--surface") || "#161A2E");
+    const N = 48, S = cv.width, cell = S / N;
+    for (let i = 0; i < N; i++) for (let j = 0; j < N; j++) {
+      const x1 = (i + 0.5) / N * 1.4 - 0.2, x2 = 1.2 - (j + 0.5) / N * 1.4;
+      const a = sig(w1 * x1 + w2 * x2 + b);
+      const mix = (k) => Math.round(bg[k] * 0.45 + (lo[k] * (1 - a) + hi[k] * a) * 0.55);
+      cx.fillStyle = `rgb(${mix(0)},${mix(1)},${mix(2)})`;
+      cx.fillRect(i * cell, j * cell, cell + 1, cell + 1);
+    }
+    // decision line a = 0.5  →  w1 x1 + w2 x2 + b = 0
+    const px = (x) => ((x + 0.2) / 1.4) * S, py = (y) => ((1.2 - y) / 1.4) * S;
+    cx.strokeStyle = css("--fg") || "#fff"; cx.lineWidth = 3; cx.setLineDash([10, 8]);
+    cx.beginPath();
+    if (Math.abs(w2) > 1e-6) { cx.moveTo(px(-0.2), py((-b - w1 * -0.2) / w2)); cx.lineTo(px(1.2), py((-b - w1 * 1.2) / w2)); }
+    else if (Math.abs(w1) > 1e-6) { cx.moveTo(px(-b / w1), py(-0.2)); cx.lineTo(px(-b / w1), py(1.2)); }
+    cx.stroke(); cx.setLineDash([]);
+    const ys = sets[dataset];
+    X.forEach(([x1, x2], i) => {
+      cx.beginPath(); cx.arc(px(x1), py(x2), 22, 0, Math.PI * 2);
+      cx.fillStyle = ys[i] ? css("--done") : css("--signal"); cx.fill();
+      cx.lineWidth = 4; cx.strokeStyle = css("--surface"); cx.stroke();
+      cx.fillStyle = css("--bg"); cx.font = "700 22px JetBrains Mono, monospace"; cx.textAlign = "center"; cx.textBaseline = "middle";
+      cx.fillText(String(ys[i]), px(x1), py(x2) + 1);
+    });
+    const outs = X.map(([a, c]) => sig(w1 * a + w2 * c + b));
+    const loss = outs.reduce((s, o, i) => s + (o - ys[i]) ** 2, 0) / 4;
+    const acc = outs.filter((o, i) => Math.round(o) === ys[i]).length;
+    $("np-loss").textContent = loss.toFixed(3);
+    $("np-acc").textContent = `${acc}/4`;
+    $("np-steps").textContent = steps.toLocaleString();
+    const s = (v) => (v < 0 ? "− " : "+ ") + Math.abs(v).toFixed(1);
+    $("np-eq").textContent = `a = σ(${w1.toFixed(1)}·x₁ ${s(w2)}·x₂ ${s(b)})`;
+    ["w1", "w2", "b"].forEach((k) => ($(k + "o").textContent = (+$(k).value).toFixed(1)));
+    return { loss, acc };
+  }
+  async function train() {
+    if (training) return;
+    training = true; $("np-train").disabled = true; $("np-msg").textContent = "Training with gradient descent…";
+    let { w1, w2, b } = W();
+    const ys = sets[dataset], lr = 1.5;
+    for (let frame = 0; frame < 40; frame++) {
+      for (let k = 0; k < 50; k++) {
+        let g1 = 0, g2 = 0, gb = 0;
+        X.forEach(([x1, x2], i) => { const a = sig(w1 * x1 + w2 * x2 + b), dz = (2 / 4) * (a - ys[i]) * a * (1 - a); g1 += dz * x1; g2 += dz * x2; gb += dz; });
+        w1 -= lr * g1; w2 -= lr * g2; b -= lr * gb; steps++;
+      }
+      setW({ w1, w2, b });
+      drawNeuron();
+      await wait(25);
+    }
+    const { acc } = drawNeuron();
+    $("np-msg").textContent = dataset === "XOR"
+      ? `Stuck at ${acc}/4. No straight line separates XOR's 1s from its 0s, so one neuron can't learn it. A second layer can.`
+      : acc === 4 ? `Learned ${dataset}: all 4 points on the right side of the line.` : "Not there yet. Train again.";
+    training = false; $("np-train").disabled = false;
+  }
+  function setupNeuron() {
+    ["w1", "w2", "b"].forEach((k) => $(k).addEventListener("input", () => { $("np-msg").textContent = ""; drawNeuron(); }));
+    $("np-data").addEventListener("click", (e) => {
+      const btn = e.target.closest("button"); if (!btn || training) return;
+      dataset = btn.dataset.d; steps = 0;
+      $("np-data").querySelectorAll("button").forEach((x) => x.setAttribute("aria-pressed", String(x === btn)));
+      $("np-msg").textContent = dataset === "XOR" ? "XOR: 1 when exactly one input is 1. Try to place one line that separates it." : "";
+      drawNeuron();
+    });
+    $("np-train").addEventListener("click", train);
+    $("np-rand").addEventListener("click", () => { steps = 0; setW({ w1: (Math.random() - 0.5) * 8, w2: (Math.random() - 0.5) * 8, b: (Math.random() - 0.5) * 8 }); $("np-msg").textContent = ""; drawNeuron(); });
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(drawNeuron);
+    drawNeuron();
+  }
+
+  // ================= boot =================
+  setupNeuron();
+  Promise.all([
+    fetch("progress.json", { cache: "no-cache" }).then((r) => r.json()),
+    fetch("tools.json", { cache: "no-cache" }).then((r) => r.json()),
+  ]).then(([data, tools]) => {
+    DATA = data; TOOLS = tools;
+    setupAgent();
+    if (voice) voice.run([
+      { kind: "think", text: "Someone opened the playground. Let me show them how I work instead of telling them." },
+      { kind: "act", text: `load_tools() → ${Object.keys(toolDefs).length} tools, 1 needs human approval` },
+      { kind: "observe", text: `${data.phases.flatMap((p) => p.tasks).length} tasks · ${Object.keys(data.standards).length} standards · ${tools.categories.reduce((n, c) => n + c.tools.length, 0)} docs in reach.`, speech: "My tools can read our tasks, our standards and our docs list, and one of them can change data, but only if you approve it." },
+      { kind: "say", text: "Give me a goal below. I'll plan, call tools, check my own work, and stop to ask you before I change anything." },
+    ]);
+  }).catch((e) => {
+    $("trace").replaceChildren(el("li", "trace-empty", location.protocol === "file:" ? "The agent can't load its data from a file:// page. Preview with `vercel dev` or `npx serve`." : `The agent couldn't load its data: ${e.message}`));
+  });
+})();
+</script>
+</body>
+</html>

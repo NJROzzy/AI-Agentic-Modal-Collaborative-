@@ -3,7 +3,6 @@
   "repo": "NJROzzy/AI-Agentic-Modal-Collaborative-",
   "_status_values": "done | progress | todo",
   "_std_values": "Tag a task with the standards it implements. Keys must match the 'standards' list below.",
-
   "standards": {
     "mcp": "Model Context Protocol",
     "acp": "ACP & AGP",
@@ -14,7 +13,6 @@
     "sandbox": "Permissions & sandboxing",
     "hitl": "Human-in-the-loop"
   },
-
   "phases": [
     {
       "id": "foundations",
@@ -23,11 +21,27 @@
       "path": "Collabe-work/PyTorch_Engine",
       "summary": "PyTorch fundamentals before any agent work: tensors, autograd, nn.Module, training loops.",
       "tasks": [
-        { "title": "Tensors: scalars, vectors, matrices, shapes", "status": "progress", "link": "Collabe-work/PyTorch_Engine/notebooks/week1_tensors_foundations.ipynb" },
-        { "title": "Autograd", "status": "todo" },
-        { "title": "nn.Module, layers and activations", "status": "todo" },
-        { "title": "Loss functions and optimizers", "status": "todo" },
-        { "title": "Training loop and evaluation", "status": "todo" }
+        {
+          "title": "Tensors: scalars, vectors, matrices, shapes",
+          "status": "progress",
+          "link": "Collabe-work/PyTorch_Engine/notebooks/week1_tensors_foundations.ipynb"
+        },
+        {
+          "title": "Autograd",
+          "status": "todo"
+        },
+        {
+          "title": "nn.Module, layers and activations",
+          "status": "todo"
+        },
+        {
+          "title": "Loss functions and optimizers",
+          "status": "todo"
+        },
+        {
+          "title": "Training loop and evaluation",
+          "status": "todo"
+        }
       ]
     },
     {
@@ -37,13 +51,40 @@
       "path": "Collabe-work/Genesis",
       "summary": "A neuron built with NumPy only: no torch, no autograd. The forward pass, loss and gradients are written by hand.",
       "tasks": [
-        { "title": "Forward pass: weighted sum + sigmoid", "status": "done", "link": "Collabe-work/Genesis/njr_neuron_from_scratch.ipynb" },
-        { "title": "MSE loss", "status": "done", "link": "Collabe-work/Genesis/njr_neuron_from_scratch.ipynb" },
-        { "title": "Manual backprop + gradient descent", "status": "done", "link": "Collabe-work/Genesis/njr_neuron_from_scratch.ipynb" },
-        { "title": "Train a neuron on the OR gate", "status": "done", "link": "Collabe-work/Genesis/njr_neuron_from_scratch.ipynb" },
-        { "title": "Show a single neuron can't learn XOR", "status": "done", "link": "Collabe-work/Genesis/njr_xor_single_neuron.ipynb" },
-        { "title": "2-layer network solves XOR (live demo)", "status": "done", "link": "xor-live-demo.html" },
-        { "title": "Compare with SA's version", "status": "todo" }
+        {
+          "title": "Forward pass: weighted sum + sigmoid",
+          "status": "done",
+          "link": "Collabe-work/Genesis/njr_neuron_from_scratch.ipynb"
+        },
+        {
+          "title": "MSE loss",
+          "status": "done",
+          "link": "Collabe-work/Genesis/njr_neuron_from_scratch.ipynb"
+        },
+        {
+          "title": "Manual backprop + gradient descent",
+          "status": "done",
+          "link": "Collabe-work/Genesis/njr_neuron_from_scratch.ipynb"
+        },
+        {
+          "title": "Train a neuron on the OR gate",
+          "status": "done",
+          "link": "Collabe-work/Genesis/njr_neuron_from_scratch.ipynb"
+        },
+        {
+          "title": "Show a single neuron can't learn XOR",
+          "status": "done",
+          "link": "Collabe-work/Genesis/njr_xor_single_neuron.ipynb"
+        },
+        {
+          "title": "2-layer network solves XOR (live demo)",
+          "status": "done",
+          "link": "xor-live-demo.html"
+        },
+        {
+          "title": "Compare with SA's version",
+          "status": "todo"
+        }
       ]
     },
     {
@@ -53,14 +94,51 @@
       "path": "Collabe-work/Genesis/Awaken",
       "summary": "A one-week sprint: wrap a language model in a cognitive loop that plans, calls tools, reviews its own errors and adjusts.",
       "tasks": [
-        { "title": "Scope, architecture, tool selection, env setup", "status": "progress", "link": "Collabe-work/Genesis/Awaken/README.md" },
-        { "title": "Core loop: plan → act → observe → review", "status": "todo" },
-        { "title": "Tools defined with JSON schemas", "status": "todo", "std": ["fcall"] },
-        { "title": "Scratchpad memory across steps", "status": "todo", "std": ["state"] },
-        { "title": "Error handling and self-review of failed tool calls", "status": "todo" },
-        { "title": "Run code-executing tools in a sandbox", "status": "todo", "std": ["sandbox"] },
-        { "title": "Ask for human approval before risky tool calls", "status": "todo", "std": ["hitl"] },
-        { "title": "End-to-end demo scenario", "status": "todo" }
+        {
+          "title": "Scope, architecture, tool selection, env setup",
+          "status": "progress",
+          "link": "Collabe-work/Genesis/Awaken/README.md"
+        },
+        {
+          "title": "Core loop: plan → act → observe → review",
+          "status": "todo"
+        },
+        {
+          "title": "Tools defined with JSON schemas",
+          "status": "todo",
+          "std": [
+            "fcall"
+          ]
+        },
+        {
+          "title": "Scratchpad memory across steps",
+          "status": "todo",
+          "std": [
+            "state"
+          ]
+        },
+        {
+          "title": "Error handling and self-review of failed tool calls",
+          "status": "todo"
+        },
+        {
+          "title": "Run code-executing tools in a sandbox",
+          "status": "todo",
+          "std": [
+            "sandbox"
+          ]
+        },
+        {
+          "title": "Ask for human approval before risky tool calls",
+          "status": "todo",
+          "std": [
+            "hitl"
+          ]
+        },
+        {
+          "title": "End-to-end demo scenario",
+          "status": "todo"
+        }
       ]
     },
     {
@@ -70,11 +148,38 @@
       "path": "",
       "summary": "Split one agent into roles that hand work to each other, then compare our version with a standard framework.",
       "tasks": [
-        { "title": "Planner, Researcher, Executor and Reviewer roles", "status": "todo", "std": ["multiagent"] },
-        { "title": "Rebuild the flow in LangGraph or AutoGen and compare", "status": "todo", "std": ["multiagent"] },
-        { "title": "Long-term memory in a vector database", "status": "todo", "std": ["state"] },
-        { "title": "Agent-to-agent messaging over ACP", "status": "todo", "std": ["acp"] },
-        { "title": "Joint demo with SA", "status": "todo" }
+        {
+          "title": "Planner, Researcher, Executor and Reviewer roles",
+          "status": "todo",
+          "std": [
+            "multiagent"
+          ]
+        },
+        {
+          "title": "Rebuild the flow in LangGraph or AutoGen and compare",
+          "status": "todo",
+          "std": [
+            "multiagent"
+          ]
+        },
+        {
+          "title": "Long-term memory in a vector database",
+          "status": "todo",
+          "std": [
+            "state"
+          ]
+        },
+        {
+          "title": "Agent-to-agent messaging over ACP",
+          "status": "todo",
+          "std": [
+            "acp"
+          ]
+        },
+        {
+          "title": "Joint demo with SA",
+          "status": "todo"
+        }
       ]
     },
     {
@@ -84,43 +189,575 @@
       "path": "",
       "summary": "Connect the agents through open protocols, lock down what they can do, measure them, and publish.",
       "tasks": [
-        { "title": "Expose our tools as an MCP server", "status": "todo", "std": ["mcp"] },
-        { "title": "Let our agent use existing MCP servers", "status": "todo", "std": ["mcp"] },
-        { "title": "Agent identity with OAuth access tokens", "status": "todo", "std": ["m2m"] },
-        { "title": "Least-privilege permissions per tool", "status": "todo", "std": ["sandbox"] },
-        { "title": "Evaluation harness for agent tasks", "status": "todo" },
-        { "title": "Deploy a public demo and write up what we learned", "status": "todo" }
+        {
+          "title": "Expose our tools as an MCP server",
+          "status": "todo",
+          "std": [
+            "mcp"
+          ]
+        },
+        {
+          "title": "Let our agent use existing MCP servers",
+          "status": "todo",
+          "std": [
+            "mcp"
+          ]
+        },
+        {
+          "title": "Agent identity with OAuth access tokens",
+          "status": "todo",
+          "std": [
+            "m2m"
+          ]
+        },
+        {
+          "title": "Least-privilege permissions per tool",
+          "status": "todo",
+          "std": [
+            "sandbox"
+          ]
+        },
+        {
+          "title": "Evaluation harness for agent tasks",
+          "status": "todo"
+        },
+        {
+          "title": "Deploy a public demo and write up what we learned",
+          "status": "todo"
+        }
       ]
     }
   ],
-
   "evolution": [
-    { "era": "Rule-Based Automation", "when": "1990s–2010s", "summary": "If-then rules, scripts and early RPA. Predictable tasks only, no real decisions.", "status": "todo", "note": "" },
-    { "era": "Conversational AI & Early ML", "when": "2010s–2020", "summary": "Intent recognition, voice assistants and chatbots. Answers single questions.", "status": "progress", "note": "Genesis builds the ML underneath by hand: a neuron, a loss, gradient descent, and why one neuron can't learn XOR." },
-    { "era": "Generative AI", "when": "2020–2023", "summary": "LLMs generate text and code and reason through puzzles, but stay reactive and prompt-dependent.", "status": "todo", "note": "" },
-    { "era": "Agentic AI", "when": "2023–present", "summary": "LLMs inside cognitive loops: planning, RAG, tool use, self-review, adjusting until the goal is met.", "status": "progress", "note": "Awaken is our first agent loop. It is being scoped now." }
+    {
+      "era": "Rule-Based Automation",
+      "when": "1990s–2010s",
+      "from": 1990,
+      "to": 2010,
+      "summary": "If-then rules, scripts and early RPA. Predictable tasks only, no real decisions.",
+      "status": "todo",
+      "note": ""
+    },
+    {
+      "era": "Conversational AI & Early ML",
+      "when": "2010s–2020",
+      "from": 2010,
+      "to": 2020,
+      "summary": "Intent recognition, voice assistants and chatbots. Answers single questions.",
+      "status": "progress",
+      "note": "Genesis builds the ML underneath by hand: a neuron, a loss, gradient descent, and why one neuron can't learn XOR."
+    },
+    {
+      "era": "Generative AI",
+      "when": "2020–2023",
+      "from": 2020,
+      "to": 2023,
+      "summary": "LLMs generate text and code and reason through puzzles, but stay reactive and prompt-dependent.",
+      "status": "todo",
+      "note": ""
+    },
+    {
+      "era": "Agentic AI",
+      "when": "2023–present",
+      "from": 2023,
+      "to": null,
+      "summary": "LLMs inside cognitive loops: planning, RAG, tool use, self-review, adjusting until the goal is met.",
+      "status": "progress",
+      "note": "Awaken is our first agent loop. It is being scoped now."
+    }
   ],
-
+  "evolutionEvents": [
+    {
+      "date": "2011-10",
+      "label": "Siri",
+      "text": "Apple ships Siri on the iPhone 4S: a voice assistant built on intent recognition."
+    },
+    {
+      "date": "2020-05",
+      "label": "GPT-3",
+      "text": "OpenAI's GPT-3 paper shows one large model can do many tasks from a prompt."
+    },
+    {
+      "date": "2022-10",
+      "label": "ReAct",
+      "text": "The ReAct paper interleaves reasoning and tool actions in one loop."
+    },
+    {
+      "date": "2022-11",
+      "label": "ChatGPT",
+      "text": "ChatGPT brings LLM chat to the public."
+    },
+    {
+      "date": "2023-03",
+      "label": "GPT-4",
+      "text": "OpenAI releases GPT-4."
+    },
+    {
+      "date": "2023-08",
+      "label": "AutoGen",
+      "text": "Microsoft publishes AutoGen for multi-agent conversations."
+    },
+    {
+      "date": "2024-11",
+      "label": "MCP",
+      "text": "Anthropic open-sources the Model Context Protocol."
+    },
+    {
+      "date": "2025-04",
+      "label": "A2A",
+      "text": "Google announces the Agent2Agent (A2A) protocol."
+    },
+    {
+      "date": "2026-09",
+      "label": "Our repo",
+      "text": "NJR and SA start building an agent from one neuron up.",
+      "ours": true
+    }
+  ],
   "openSource": {
     "steps": [
-      { "title": "Pick 2–3 target projects (MCP servers, LangGraph, AutoGen, PyTorch ecosystem)", "status": "todo" },
-      { "title": "Read each contributing guide and set the project up locally", "status": "todo" },
-      { "title": "Start with docs fixes and good-first-issue labels", "status": "todo" },
-      { "title": "Land a first merged PR", "status": "todo" },
-      { "title": "Publish Genesis and Awaken as documented open source", "status": "todo" }
+      {
+        "title": "Pick 2–3 target projects (MCP servers, LangGraph, AutoGen, PyTorch ecosystem)",
+        "status": "todo"
+      },
+      {
+        "title": "Read each contributing guide and set the project up locally",
+        "status": "todo"
+      },
+      {
+        "title": "Start with docs fixes and good-first-issue labels",
+        "status": "todo"
+      },
+      {
+        "title": "Land a first merged PR",
+        "status": "todo"
+      },
+      {
+        "title": "Publish Genesis and Awaken as documented open source",
+        "status": "todo"
+      }
     ],
-    "_contribution_shape": { "date": "YYYY-MM-DD", "project": "name", "title": "what changed", "type": "docs | fix | feature | issue", "link": "https://…", "status": "open | merged" },
+    "_contribution_shape": {
+      "date": "YYYY-MM-DD",
+      "project": "name",
+      "title": "what changed",
+      "type": "docs | fix | feature | issue",
+      "link": "https://…",
+      "status": "open | merged"
+    },
     "contributions": []
   },
-
+  "plan": {
+    "_shape": "Stages are dated blocks of work. Link a stage to a phase (phase id) or an era (era index) and its status follows that item; otherwise set status. Steps run in order.",
+    "tracks": [
+      {
+        "id": "build",
+        "name": "Build phases"
+      },
+      {
+        "id": "evolution",
+        "name": "Evolution study"
+      },
+      {
+        "id": "oss",
+        "name": "Open source"
+      }
+    ],
+    "cadence": [
+      {
+        "when": "Monday",
+        "what": "30-minute plan: pick this week's steps from this page and split them between NJR and SA."
+      },
+      {
+        "when": "Daily",
+        "what": "Work on a branch per step. Commit small, with messages that name the step."
+      },
+      {
+        "when": "Before merge",
+        "what": "The other person reviews the PR and runs the notebook or demo."
+      },
+      {
+        "when": "Friday",
+        "what": "Demo what changed, update task status in progress.json, redeploy the site."
+      }
+    ],
+    "workflow": [
+      {
+        "title": "Pick a step",
+        "text": "Take the next open step from the current stage on this page."
+      },
+      {
+        "title": "Branch",
+        "text": "Create a branch named after the step, e.g. awaken-tool-schemas."
+      },
+      {
+        "title": "Build",
+        "text": "Work in the stage's folder under Collabe-work/. Comment the why, not just the what."
+      },
+      {
+        "title": "Review",
+        "text": "Open a PR. The other person reviews it and runs it locally."
+      },
+      {
+        "title": "Merge & mark",
+        "text": "Merge, then set the task's status in progress.json to done or progress."
+      },
+      {
+        "title": "Ship the update",
+        "text": "Run vercel --prod from workspace/NJRProjects so this site shows the new status."
+      }
+    ],
+    "stages": [
+      {
+        "id": "genesis-close",
+        "track": "build",
+        "title": "Close out Genesis",
+        "phase": "genesis",
+        "start": "2026-10-12",
+        "end": "2026-10-18",
+        "steps": [
+          {
+            "title": "SA pushes sa_neuron_from_scratch.ipynb",
+            "output": "Collabe-work/Genesis/",
+            "owner": "SA"
+          },
+          {
+            "title": "Compare both notebooks: initialization, learning rate, loss curves",
+            "output": "Comparison section in Genesis README",
+            "owner": "Both"
+          },
+          {
+            "title": "Tick the Genesis README checklist and mark the phase done",
+            "output": "progress.json",
+            "owner": "NJR"
+          }
+        ],
+        "exit": "Both notebooks are in the repo and the comparison is written up."
+      },
+      {
+        "id": "foundations",
+        "track": "build",
+        "title": "Finish PyTorch foundations",
+        "phase": "foundations",
+        "start": "2026-10-12",
+        "end": "2026-10-25",
+        "steps": [
+          {
+            "title": "Finish tensors: indexing, broadcasting, reshaping, moving to the mps device",
+            "output": "week1_tensors_foundations.ipynb"
+          },
+          {
+            "title": "Autograd: requires_grad and backward(), checked against Genesis's hand-written gradients",
+            "output": "week2_autograd.ipynb"
+          },
+          {
+            "title": "Rebuild the XOR 2-layer net with nn.Module, nn.Linear and nn.Sigmoid",
+            "output": "week2_nn_module.ipynb"
+          },
+          {
+            "title": "Loss functions and optimizers: MSE vs BCE, SGD vs Adam on XOR",
+            "output": "week2_nn_module.ipynb"
+          },
+          {
+            "title": "A reusable train/eval loop on a small real dataset",
+            "output": "week3_training_loop.ipynb"
+          }
+        ],
+        "exit": "PyTorch reproduces the Genesis XOR result, and the training loop is a template we can reuse."
+      },
+      {
+        "id": "awaken",
+        "track": "build",
+        "title": "Awaken sprint: first agent",
+        "phase": "awaken",
+        "start": "2026-10-26",
+        "end": "2026-11-08",
+        "steps": [
+          {
+            "title": "Choose the model (Claude API or a local Ollama model), create agent/, keep API keys in a gitignored .env",
+            "output": "Collabe-work/Genesis/Awaken/agent/"
+          },
+          {
+            "title": "Core loop: plan → act → observe → review, with a max-steps limit",
+            "output": "agent/loop.py"
+          },
+          {
+            "title": "2–3 tools defined with JSON schemas: calculator, file reader, our Genesis classifier",
+            "output": "agent/tools/"
+          },
+          {
+            "title": "Scratchpad memory across steps",
+            "output": "agent/memory.py"
+          },
+          {
+            "title": "Error handling: bad arguments and failed tools are fed back to the model to retry",
+            "output": "agent/loop.py"
+          },
+          {
+            "title": "Run the code tool in Docker, and ask for approval before any file write",
+            "output": "agent/tools/"
+          },
+          {
+            "title": "End-to-end demo scenario and writeup",
+            "output": "demo/demo_scenario.py"
+          }
+        ],
+        "exit": "One command runs the demo end to end, and the README explains the loop."
+      },
+      {
+        "id": "multi-agent",
+        "track": "build",
+        "title": "Multi-agent systems",
+        "phase": "multi-agent",
+        "start": "2026-11-09",
+        "end": "2026-12-06",
+        "steps": [
+          {
+            "title": "Split Awaken into Planner, Researcher, Executor and Reviewer roles"
+          },
+          {
+            "title": "Shared state and message passing between the roles"
+          },
+          {
+            "title": "Long-term memory in Chroma"
+          },
+          {
+            "title": "Rebuild the same flow in LangGraph and compare code size and reliability"
+          },
+          {
+            "title": "Agent-to-agent messaging over ACP or A2A"
+          },
+          {
+            "title": "Joint demo with SA",
+            "owner": "Both"
+          }
+        ],
+        "exit": "Our version and the LangGraph version solve the same task, with a written comparison."
+      },
+      {
+        "id": "ship",
+        "track": "build",
+        "title": "Standards, security & ship",
+        "phase": "ship",
+        "start": "2026-12-07",
+        "end": "2027-01-03",
+        "steps": [
+          {
+            "title": "Expose our tools as an MCP server with the Python SDK"
+          },
+          {
+            "title": "Connect our agent to an existing MCP server, such as filesystem or GitHub"
+          },
+          {
+            "title": "Agent identity with an OAuth client-credentials token"
+          },
+          {
+            "title": "Least-privilege permissions for each tool"
+          },
+          {
+            "title": "Evaluation harness in Inspect: 10–20 tasks with a success rate"
+          },
+          {
+            "title": "Public demo and writeup on this site"
+          }
+        ],
+        "exit": "All 8 standards are at least in progress and the eval score is published."
+      },
+      {
+        "id": "era-1",
+        "track": "evolution",
+        "title": "Era 1: Rule-Based Automation",
+        "era": 0,
+        "start": "2026-10-12",
+        "end": "2026-10-18",
+        "steps": [
+          {
+            "title": "Read about if-then systems, expert systems and RPA"
+          },
+          {
+            "title": "Build a 20-line rule-based chatbot and list where it breaks"
+          },
+          {
+            "title": "Write the era note in progress.json",
+            "output": "progress.json"
+          }
+        ],
+        "exit": "Note written and status set to done."
+      },
+      {
+        "id": "era-2",
+        "track": "evolution",
+        "title": "Era 2: Conversational AI & Early ML",
+        "era": 1,
+        "start": "2026-10-19",
+        "end": "2026-10-25",
+        "steps": [
+          {
+            "title": "Read about intent recognition and early assistants like Siri"
+          },
+          {
+            "title": "Train a tiny intent classifier in PyTorch"
+          },
+          {
+            "title": "Write the era note",
+            "output": "progress.json"
+          }
+        ],
+        "exit": "Note written and status set to done."
+      },
+      {
+        "id": "era-3",
+        "track": "evolution",
+        "title": "Era 3: Generative AI",
+        "era": 2,
+        "start": "2026-10-26",
+        "end": "2026-11-01",
+        "steps": [
+          {
+            "title": "Read the GPT-3 paper's introduction and results"
+          },
+          {
+            "title": "Call an LLM with no tools and record what it can't do: memory, actions, fresh data"
+          },
+          {
+            "title": "Write the era note",
+            "output": "progress.json"
+          }
+        ],
+        "exit": "Note written and status set to done."
+      },
+      {
+        "id": "era-4",
+        "track": "evolution",
+        "title": "Era 4: Agentic AI",
+        "era": 3,
+        "start": "2026-11-02",
+        "end": "2026-11-08",
+        "steps": [
+          {
+            "title": "Read the ReAct paper and Building effective agents"
+          },
+          {
+            "title": "Map Awaken's loop to the PDF's planning, RAG, tool use and self-review"
+          },
+          {
+            "title": "Write the era note",
+            "output": "progress.json"
+          }
+        ],
+        "exit": "Note written and status set to done."
+      },
+      {
+        "id": "oss-pick",
+        "track": "oss",
+        "title": "Pick projects and set up",
+        "status": "todo",
+        "start": "2026-11-09",
+        "end": "2026-11-22",
+        "steps": [
+          {
+            "title": "Shortlist 2–3 projects: an MCP server, LangGraph or AutoGen, the PyTorch ecosystem"
+          },
+          {
+            "title": "Read each CONTRIBUTING guide and run the test suite locally"
+          },
+          {
+            "title": "Find 2–3 good-first-issue or docs issues"
+          }
+        ],
+        "exit": "Each project builds locally and we each have an issue picked."
+      },
+      {
+        "id": "oss-first-pr",
+        "track": "oss",
+        "title": "First contributions",
+        "status": "todo",
+        "start": "2026-11-23",
+        "end": "2026-12-20",
+        "steps": [
+          {
+            "title": "Open a docs fix PR"
+          },
+          {
+            "title": "Open a code PR for a good-first-issue"
+          },
+          {
+            "title": "Respond to review and get it merged"
+          },
+          {
+            "title": "Add each one to openSource.contributions",
+            "output": "progress.json"
+          }
+        ],
+        "exit": "At least one merged PR each."
+      },
+      {
+        "id": "oss-publish",
+        "track": "oss",
+        "title": "Publish our own work",
+        "status": "todo",
+        "start": "2026-12-21",
+        "end": "2027-01-03",
+        "steps": [
+          {
+            "title": "Add a license and a clean README to Genesis and Awaken"
+          },
+          {
+            "title": "Add runnable examples and a requirements file"
+          },
+          {
+            "title": "Announce it on this site"
+          }
+        ],
+        "exit": "Genesis and Awaken are public, documented and runnable."
+      }
+    ]
+  },
   "log": [
-    { "date": "2026-10-10", "track": "Site", "text": "Made the evolution and standards of agentic AI the home page, and mapped every phase task to the standard it implements." },
-    { "date": "2026-10-09", "track": "Site", "text": "Launched this progress tracker on Vercel." },
-    { "date": "2026-09-14", "track": "Phases", "text": "Wrote the Awaken plan, the first from-scratch agent sprint." },
-    { "date": "2026-09-12", "track": "Phases", "text": "Confirmed a single neuron can't learn XOR and built the live demo." },
-    { "date": "2026-09-11", "track": "Phases", "text": "Trained a neuron from scratch on the OR gate." },
-    { "date": "2026-09-10", "track": "Phases", "text": "Kicked off Genesis with SA." },
-    { "date": "2026-09-07", "track": "Phases", "text": "Started PyTorch Engine week 1: tensors." },
-    { "date": "2026-09-05", "track": "Setup", "text": "Created the collaborative repo with SA." }
+    {
+      "date": "2026-10-10",
+      "track": "Site",
+      "text": "Added the execution plan: dated stages, steps and exit criteria for every goal."
+    },
+    {
+      "date": "2026-10-10",
+      "track": "Site",
+      "text": "Made the evolution and standards of agentic AI the home page, and mapped every phase task to the standard it implements."
+    },
+    {
+      "date": "2026-10-09",
+      "track": "Site",
+      "text": "Launched this progress tracker on Vercel."
+    },
+    {
+      "date": "2026-09-14",
+      "track": "Phases",
+      "text": "Wrote the Awaken plan, the first from-scratch agent sprint."
+    },
+    {
+      "date": "2026-09-12",
+      "track": "Phases",
+      "text": "Confirmed a single neuron can't learn XOR and built the live demo."
+    },
+    {
+      "date": "2026-09-11",
+      "track": "Phases",
+      "text": "Trained a neuron from scratch on the OR gate."
+    },
+    {
+      "date": "2026-09-10",
+      "track": "Phases",
+      "text": "Kicked off Genesis with SA."
+    },
+    {
+      "date": "2026-09-07",
+      "track": "Phases",
+      "text": "Started PyTorch Engine week 1: tensors."
+    },
+    {
+      "date": "2026-09-05",
+      "track": "Setup",
+      "text": "Created the collaborative repo with SA."
+    }
   ]
 }

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -182,6 +182,8 @@
   .mark.progress { border-color: var(--progress); background: linear-gradient(90deg, var(--progress) 50%, transparent 50%); }
   .tasks li.done span.t { color: var(--muted); }
   .tasks a { word-break: break-word; }
+  .phase-docs { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 0.88rem; padding-top: 12px; border-top: 1px dashed var(--line); }
+  .phase-docs .label { width: 100%; font-size: 0.66rem; }
   .std { display: inline-block; font-family: var(--mono); font-size: 0.68rem; color: var(--accent); background: var(--accent-soft); padding: 1px 7px; border-radius: 4px; margin-left: 8px; text-decoration: none; white-space: nowrap; vertical-align: 1px; }
   .std:hover { text-decoration: underline; }
 
@@ -238,6 +240,10 @@
   footer { border-top: 1px solid var(--line); padding-block: 28px 40px; color: var(--muted); font-size: 0.88rem; }
   footer .wrap { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
 </style>
+<link rel="stylesheet" href="viz.css">
+<link rel="stylesheet" href="fx.css">
+<script src="viz.js"></script>
+<script src="fx.js"></script>
 </head>
 <body>
 
@@ -246,6 +252,8 @@
     <a class="brand" href="index.html">NJR<span>/</span>Projects</a>
     <nav aria-label="Sections">
       <a href="index.html">Standards</a>
+      <a href="plan.html">Plan</a>
+      <a href="playground.html">Playground</a>
       <a href="#phases">Phases</a>
       <a href="#evolution">Evolution</a>
       <a href="#open-source">Open source</a>
@@ -260,6 +268,8 @@
       <p class="label">Repo progress · AI-Agentic-Modal-Collaborative</p>
       <h1>Where the repo is, <em>and where it's going.</em></h1>
       <p class="lede">How our collaborative repo is moving across three goals: building an agentic AI system phase by phase, understanding how agentic AI evolved, and working on open source. Each task is tagged with the <a href="index.html#standards">2026 standard</a> it implements. Status comes from <code>progress.json</code>; commits come live from GitHub.</p>
+
+      <div id="voice"></div>
 
       <div class="stats" aria-live="polite">
         <div class="stat"><span class="label">Agentic phases</span><span class="v" id="st-phases">–</span><span class="s" id="st-phases-s">loading</span></div>
@@ -280,6 +290,10 @@
         <h2>Agentic AI phases</h2>
         <p>The build path from a single neuron to working agents. Each phase must be solid before the next one starts.</p>
       </div>
+      <figure class="viz" style="margin:0 0 20px">
+        <div class="viz-h"><h3>Tasks by phase</h3><span class="sub">Hover a segment to see its tasks</span></div>
+        <div id="viz-phases" style="display:flex;flex-direction:column;gap:14px"></div>
+      </figure>
       <div class="phases" id="phase-list"></div>
     </div>
   </section>
@@ -324,6 +338,10 @@
       </div>
       <div class="activity">
         <div>
+          <figure class="viz" style="margin:0 0 20px">
+            <div class="viz-h"><h3>Commits per week</h3><span class="sub">Live from GitHub</span></div>
+            <div id="viz-commits"><p class="viz-empty">Loading commits…</p></div>
+          </figure>
           <div class="col-head"><h3>Latest commits</h3><span class="label" id="commit-src">live from GitHub</span></div>
           <ul class="commits" id="commit-list"><li><span class="state">Loading commits from GitHub…</span></li></ul>
         </div>
@@ -353,6 +371,7 @@
   const $ = (id) => document.getElementById(id);
   const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
   let STD = {};
+  let DOCS = {};
   const STATUS_LABEL = { done: "Done", progress: "In progress", todo: "Not started" };
   const fmtDate = (iso, opts) => new Date(iso + (iso.length === 10 ? "T12:00:00" : "")).toLocaleDateString("en-US", opts || { month: "short", day: "numeric" });
 
@@ -401,6 +420,7 @@
         <div class="body">
           <p>${esc(p.summary)}${p.path ? ` <a href="${esc(ghUrl(p.path))}" target="_blank" rel="noopener"><code>${esc(p.path)}</code></a>` : ""}</p>
           <ul class="tasks">${p.tasks.map(taskItem).join("")}</ul>
+          ${(DOCS[p.id] || []).length ? `<div class="phase-docs"><span class="label">Docs for this phase</span>${DOCS[p.id].map((t) => `<a href="${esc(t.docs)}" target="_blank" rel="noopener">${esc(t.name)} ↗</a>`).join("")}<a href="index.html#tools">All tools →</a></div>` : ""}
         </div>
       </details>`;
     }).join("");
@@ -408,6 +428,8 @@
     const donePhases = phases.filter((p) => statusOf(p.tasks) === "done").length;
     $("st-phases").textContent = `${ps.pct}%`;
     $("st-phases-s").textContent = `${ps.d} of ${ps.n} tasks · ${donePhases}/${phases.length} phases done`;
+
+    if (window.Viz) { Viz.bindTips(); Viz.phaseBars($("viz-phases"), phases); }
 
     // ---- evolution
     const eras = data.evolution || [];
@@ -470,34 +492,64 @@
   async function loadCommits() {
     const list = $("commit-list");
     try {
-      const res = await fetch(`https://api.github.com/repos/${REPO}/commits?per_page=8`, { headers: { Accept: "application/vnd.github+json" } });
-      if (!res.ok) throw new Error(res.status === 403 ? "GitHub's hourly rate limit was reached. Reload in a while." : `GitHub returned ${res.status}.`);
-      const commits = await res.json();
-      const link = res.headers.get("Link") || "";
-      const last = link.match(/[?&]page=(\d+)>; rel="last"/);
-      list.innerHTML = commits.map((c) => `<li>
+      // up to 300 commits (3 pages of 100) feed both the list and the weekly chart
+      let commits = [];
+      for (let page = 1; page <= 3; page++) {
+        const res = await fetch(`https://api.github.com/repos/${REPO}/commits?per_page=100&page=${page}`, { headers: { Accept: "application/vnd.github+json" } });
+        if (!res.ok) throw new Error(res.status === 403 ? "GitHub's hourly rate limit was reached. Reload in a while." : `GitHub returned ${res.status}.`);
+        const batch = await res.json();
+        commits = commits.concat(batch);
+        if (!/rel="next"/.test(res.headers.get("Link") || "")) break;
+      }
+      list.innerHTML = commits.slice(0, 8).map((c) => `<li>
           <a class="msg" href="${esc(c.html_url)}" target="_blank" rel="noopener">${esc(c.commit.message.split("\n")[0].trim() || "(no message)")}</a>
           <span class="sha">${esc(c.sha.slice(0, 7))}</span>
           <span class="by">${esc(c.author?.login || c.commit.author.name)} · ${esc(relTime(c.commit.author.date))}</span>
         </li>`).join("");
-      // per_page=8, so the last page number × 8 bounds the total; refetch with per_page=1 for an exact count
-      if (last) {
-        const r1 = await fetch(`https://api.github.com/repos/${REPO}/commits?per_page=1`);
-        const m = (r1.headers.get("Link") || "").match(/[?&]page=(\d+)>; rel="last"/);
-        $("st-commits").textContent = m ? m[1] : "–";
-      } else {
-        $("st-commits").textContent = String(commits.length);
-      }
+      $("st-commits").textContent = commits.length >= 300 ? "300+" : String(commits.length);
+      if (window.Viz) { Viz.bindTips(); Viz.commitWeeks($("viz-commits"), commits); }
       if (commits[0]) $("st-commits-s").textContent = `last ${relTime(commits[0].commit.author.date)}`;
     } catch (err) {
       list.innerHTML = `<li><span class="state">Couldn't load commits. ${esc(err.message || "")} <a href="https://github.com/${esc(REPO)}/commits/main" target="_blank" rel="noopener">See them on GitHub</a>.</span></li>`;
       $("st-commits-s").textContent = "GitHub unavailable";
+      $("viz-commits").innerHTML = `<p class="viz-empty">Commit chart unavailable: ${esc(err.message || "GitHub didn't respond")}</p>`;
     }
   }
 
-  fetch("progress.json", { cache: "no-cache" })
+  if (window.FX) FX.net(document.querySelector(".hero"));
+  const voice = window.FX ? FX.voice($("voice"), { name: "njr-agent", status: " · online · auditing progress" }) : null;
+
+  // ---- the site speaks for itself (fx.js)
+  const pct = (items) => { const n = items.length || 1; return Math.round(((items.filter((t) => t.status === "done").length + items.filter((t) => t.status === "progress").length * 0.5) / n) * 100); };
+
+  async function narrate(data) {
+    if (!voice) return;
+    const phases = data.phases || [];
+    const tasks = phases.flatMap((p) => p.tasks);
+    const done = tasks.filter((t) => t.status === "done").length;
+    const best = phases.slice().sort((a, b) => pct(b.tasks) - pct(a.tasks))[0];
+    const next = tasks.find((t) => t.status === "progress") || tasks.find((t) => t.status === "todo");
+    let pulse = null;
+    try { pulse = await FX.repoPulse(data.repo); } catch (e) { pulse = null; }
+    voice.run([
+      { kind: "act", text: 'read_file("progress.json")' },
+      { kind: "observe", text: `${done} of ${tasks.length} tasks done (${pct(tasks)}%) · strongest phase: ${best.name}, ${pct(best.tasks)}% · open source: ${(data.openSource?.contributions || []).length} contributions.`, speech: `${done} of ${tasks.length} tasks are done. The strongest phase is ${best.name}. Open source hasn't started yet.` },
+      { kind: "act", text: "github.commits()" },
+      pulse ? { kind: "observe", text: `${pulse.total} commits · last one ${pulse.last?.when}.`, speech: `There are ${pulse.total} commits, the last one ${pulse.last?.when}.` } : { kind: "observe", text: "GitHub is unreachable right now." },
+      { kind: "say", text: `Here's the honest state of the repo. ${next ? `Next up: ${next.title}.` : "Everything is done."} Every number below comes from the repo, not from a slide.` },
+    ]);
+  }
+
+  // tools.json is optional here: it only adds docs links under each phase
+  fetch("tools.json", { cache: "no-cache" })
+    .then((r) => (r.ok ? r.json() : { categories: [] }))
+    .catch(() => ({ categories: [] }))
+    .then((tools) => {
+      (tools.categories || []).flatMap((c) => c.tools).forEach((t) => { if (t.phase) (DOCS[t.phase] = DOCS[t.phase] || []).push(t); });
+      return fetch("progress.json", { cache: "no-cache" });
+    })
     .then((r) => { if (!r.ok) throw new Error(`progress.json returned ${r.status}`); return r.json(); })
-    .then(render)
+    .then((data) => { render(data); narrate(data); })
     .catch((err) => {
       const box = $("load-error");
       box.hidden = false;

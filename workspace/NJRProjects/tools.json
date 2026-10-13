@@ -1,0 +1,129 @@
+{
+  "_shape": "Each tool: name, by, what (one sentence), docs (URL), std (standard keys from progress.json, optional), phase (phase id from progress.json, optional).",
+  "categories": [
+    {
+      "id": "start",
+      "name": "Start here",
+      "blurb": "Read these before writing the Awaken loop. They explain the patterns everything else is built on.",
+      "tools": [
+        { "name": "Building effective agents", "by": "Anthropic", "what": "When to use a simple workflow and when to use an agent, plus the core patterns: prompt chaining, routing, orchestrator-workers, evaluator-optimizer.", "docs": "https://www.anthropic.com/engineering/building-effective-agents", "phase": "awaken" },
+        { "name": "ReAct paper", "by": "Yao et al., 2022", "what": "The reason → act → observe loop that most agents, including Awaken, are based on.", "docs": "https://arxiv.org/abs/2210.03629", "phase": "awaken" },
+        { "name": "Hugging Face Agents Course", "by": "Hugging Face", "what": "A free course that builds agents step by step with smolagents, LangGraph and LlamaIndex.", "docs": "https://huggingface.co/learn/agents-course/unit0/introduction", "phase": "awaken" },
+        { "name": "Claude Cookbooks", "by": "Anthropic", "what": "Runnable notebooks for tool use, RAG, sub-agents and evaluation.", "docs": "https://github.com/anthropics/claude-cookbooks", "phase": "awaken" }
+      ]
+    },
+    {
+      "id": "models",
+      "name": "Models & SDKs",
+      "blurb": "The LLM that acts as the agent's central nervous system, and the SDKs for calling it.",
+      "tools": [
+        { "name": "Claude API", "by": "Anthropic", "what": "Messages API, streaming, prompt caching and model reference.", "docs": "https://platform.claude.com/docs/en/api/overview", "phase": "awaken" },
+        { "name": "Claude Agent SDK", "by": "Anthropic", "what": "A production agent loop with built-in tools, permissions and sub-agents. Useful to compare against our hand-built loop.", "docs": "https://code.claude.com/docs/en/agent-sdk/overview", "phase": "awaken", "std": ["sandbox", "hitl"] },
+        { "name": "Ollama", "by": "Ollama", "what": "Run open models locally on the M1 for free, offline experiments.", "docs": "https://ollama.com/", "phase": "awaken" },
+        { "name": "Transformers", "by": "Hugging Face", "what": "Load and run open models in PyTorch. Connects Phase 1 to the LLM layer.", "docs": "https://huggingface.co/docs/transformers/index", "phase": "foundations" }
+      ]
+    },
+    {
+      "id": "fcall",
+      "name": "Function calling",
+      "blurb": "How the model asks to run a tool with arguments that match a schema.",
+      "tools": [
+        { "name": "Tool use with Claude", "by": "Anthropic", "what": "Define tools with JSON Schema, handle tool_use blocks and return tool results.", "docs": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/overview", "phase": "awaken", "std": ["fcall"] },
+        { "name": "Function calling guide", "by": "OpenAI", "what": "The same idea in the OpenAI API, including strict schema mode.", "docs": "https://developers.openai.com/api/docs/guides/function-calling", "phase": "awaken", "std": ["fcall"] },
+        { "name": "JSON Schema", "by": "json-schema.org", "what": "The schema language both APIs use to describe tool arguments.", "docs": "https://json-schema.org/learn/getting-started-step-by-step", "phase": "awaken", "std": ["fcall"] }
+      ]
+    },
+    {
+      "id": "protocols",
+      "name": "Protocols",
+      "blurb": "Open standards for connecting agents to tools and data, and to each other.",
+      "tools": [
+        { "name": "Model Context Protocol", "by": "Anthropic, open standard", "what": "The spec and guides for MCP servers (which expose tools and data) and clients (which use them).", "docs": "https://modelcontextprotocol.io/docs/getting-started/intro", "phase": "ship", "std": ["mcp"] },
+        { "name": "MCP SDKs & servers", "by": "modelcontextprotocol on GitHub", "what": "Official Python and TypeScript SDKs plus reference servers to learn from.", "docs": "https://github.com/modelcontextprotocol", "phase": "ship", "std": ["mcp"] },
+        { "name": "Agent Communication Protocol", "by": "IBM BeeAI, Linux Foundation", "what": "A REST-based protocol for agents to discover each other and exchange messages and tasks.", "docs": "https://agentcommunicationprotocol.dev/introduction/welcome", "phase": "multi-agent", "std": ["acp"] },
+        { "name": "A2A Protocol", "by": "Google, Linux Foundation", "what": "Agent-to-agent protocol for passing tasks between agents built on different frameworks.", "docs": "https://a2a-protocol.org/", "phase": "multi-agent", "std": ["acp"] },
+        { "name": "AGNTCY", "by": "Cisco, Linux Foundation", "what": "Infrastructure for agent networks, home of the Agent Gateway Protocol (AGP).", "docs": "https://docs.agntcy.org/", "phase": "multi-agent", "std": ["acp"] }
+      ]
+    },
+    {
+      "id": "frameworks",
+      "name": "Multi-agent frameworks",
+      "blurb": "For Phase 4: rebuild our Planner / Researcher / Executor / Reviewer flow in one of these and compare.",
+      "tools": [
+        { "name": "LangGraph", "by": "LangChain", "what": "Agents as graphs of nodes with shared state, checkpoints and human-in-the-loop interrupts.", "docs": "https://docs.langchain.com/oss/python/langgraph/overview", "phase": "multi-agent", "std": ["multiagent", "state"] },
+        { "name": "LangGraph interrupts", "by": "LangChain", "what": "Pause a graph and wait for a human to approve or edit before continuing.", "docs": "https://docs.langchain.com/oss/python/langgraph/interrupts", "phase": "awaken", "std": ["hitl"] },
+        { "name": "AutoGen", "by": "Microsoft", "what": "Multi-agent conversations where agents with different roles talk until a task is done.", "docs": "https://microsoft.github.io/autogen/stable/", "phase": "multi-agent", "std": ["multiagent"] },
+        { "name": "CrewAI", "by": "CrewAI", "what": "Role-based crews of agents with tasks and processes.", "docs": "https://docs.crewai.com/", "phase": "multi-agent", "std": ["multiagent"] },
+        { "name": "OpenAI Agents SDK", "by": "OpenAI", "what": "Lightweight agents with handoffs between agents, guardrails and tracing.", "docs": "https://openai.github.io/openai-agents-python/", "phase": "multi-agent", "std": ["multiagent"] }
+      ]
+    },
+    {
+      "id": "memory",
+      "name": "Memory & retrieval",
+      "blurb": "Short-term scratchpads and long-term memory in vector databases, plus RAG.",
+      "tools": [
+        { "name": "LangGraph memory", "by": "LangChain", "what": "Short-term (thread) and long-term (store) memory patterns for agents.", "docs": "https://docs.langchain.com/oss/python/langgraph/add-memory", "phase": "awaken", "std": ["state"] },
+        { "name": "Chroma", "by": "Chroma", "what": "An open-source vector database that runs locally. An easy first long-term memory.", "docs": "https://docs.trychroma.com/docs/overview/introduction", "phase": "multi-agent", "std": ["state"] },
+        { "name": "FAISS", "by": "Meta", "what": "A fast similarity-search library. Good for understanding how vector search works.", "docs": "https://faiss.ai/", "phase": "multi-agent", "std": ["state"] },
+        { "name": "pgvector", "by": "pgvector", "what": "Vector search inside Postgres, for when memory needs a real database.", "docs": "https://github.com/pgvector/pgvector", "phase": "multi-agent", "std": ["state"] },
+        { "name": "LlamaIndex", "by": "LlamaIndex", "what": "Load, index and query documents for retrieval-augmented generation.", "docs": "https://developers.llamaindex.ai/python/framework/", "phase": "multi-agent", "std": ["state"] }
+      ]
+    },
+    {
+      "id": "security",
+      "name": "Sandboxing & security",
+      "blurb": "Keep agents isolated, give them only the access they need, and verify who they are.",
+      "tools": [
+        { "name": "E2B", "by": "E2B", "what": "Cloud sandboxes for running agent-generated code safely.", "docs": "https://docs.e2b.dev/", "phase": "awaken", "std": ["sandbox"] },
+        { "name": "Docker", "by": "Docker", "what": "Run code tools in containers so they can't touch the host.", "docs": "https://docs.docker.com/get-started/", "phase": "awaken", "std": ["sandbox"] },
+        { "name": "OAuth 2.0", "by": "oauth.net", "what": "The spec family behind machine-to-machine tokens, including the client-credentials flow.", "docs": "https://oauth.net/2/", "phase": "ship", "std": ["m2m"] },
+        { "name": "OWASP Top 10 for LLM Apps", "by": "OWASP", "what": "The main risks for LLM apps and agents, including prompt injection and excessive agency.", "docs": "https://genai.owasp.org/llm-top-10/", "phase": "ship", "std": ["sandbox", "hitl"] }
+      ]
+    },
+    {
+      "id": "eval",
+      "name": "Evaluation & observability",
+      "blurb": "See what an agent did at each step and measure whether it worked.",
+      "tools": [
+        { "name": "Inspect", "by": "UK AI Security Institute", "what": "An open-source framework for writing evaluations of models and agents.", "docs": "https://inspect.aisi.org.uk/", "phase": "ship" },
+        { "name": "Langfuse", "by": "Langfuse", "what": "Open-source tracing, prompt management and evals. Can be self-hosted.", "docs": "https://langfuse.com/docs", "phase": "ship" },
+        { "name": "LangSmith", "by": "LangChain", "what": "Tracing and evaluation for LangChain and LangGraph apps.", "docs": "https://docs.langchain.com/langsmith/observability", "phase": "ship" }
+      ]
+    },
+    {
+      "id": "foundations",
+      "name": "Foundations",
+      "blurb": "The libraries behind Phases 1 and 2.",
+      "tools": [
+        { "name": "PyTorch", "by": "PyTorch Foundation", "what": "Tensors, autograd, nn.Module and the mps backend for the M1.", "docs": "https://docs.pytorch.org/docs/stable/index.html", "phase": "foundations" },
+        { "name": "NumPy", "by": "NumPy", "what": "The array library Genesis is built on.", "docs": "https://numpy.org/doc/stable/", "phase": "genesis" }
+      ]
+    }
+  ],
+  "_repos_shape": "Each repo: repo (owner/name on GitHub), kind (Platform, Framework, Coding agent, Protocol, Memory, Browser), what (one sentence), stars (snapshot used when the live GitHub count can't load), std/phase optional like tools.",
+  "repos_as_of": "2026-10-12",
+  "repos": [
+    { "repo": "n8n-io/n8n", "kind": "Platform", "what": "Workflow automation with AI agent nodes: wire LLMs to 400+ apps visually or in code.", "stars": 207159, "std": ["hitl"] },
+    { "repo": "Significant-Gravitas/AutoGPT", "kind": "Platform", "what": "The project that started the autonomous-agent wave in 2023, now a platform for building and running agents.", "stars": 187539, "phase": "awaken" },
+    { "repo": "langgenius/dify", "kind": "Platform", "what": "Build agentic workflows and RAG pipelines in a visual editor, then ship them as apps or APIs.", "stars": 158297 },
+    { "repo": "langflow-ai/langflow", "kind": "Platform", "what": "Drag-and-drop builder for agents and workflows, with every flow exportable as an API.", "stars": 155573 },
+    { "repo": "anthropics/claude-code", "kind": "Coding agent", "what": "Anthropic's agentic coding tool for the terminal: reads the codebase, edits files, runs commands.", "stars": 150467, "std": ["sandbox", "hitl", "mcp"], "phase": "ship" },
+    { "repo": "langchain-ai/langchain", "kind": "Framework", "what": "The most-used library for chaining LLM calls, tools and retrieval into agents.", "stars": 147717, "std": ["fcall"], "phase": "awaken" },
+    { "repo": "openai/codex", "kind": "Coding agent", "what": "OpenAI's lightweight coding agent for the terminal, written in Rust.", "stars": 128880, "std": ["sandbox"] },
+    { "repo": "browser-use/browser-use", "kind": "Browser", "what": "Lets an agent drive a real web browser: click, type and read pages to finish tasks.", "stars": 117767, "std": ["fcall"] },
+    { "repo": "google-gemini/gemini-cli", "kind": "Coding agent", "what": "Google's open-source agent that brings Gemini into the terminal, with MCP support.", "stars": 107303, "std": ["mcp"] },
+    { "repo": "modelcontextprotocol/servers", "kind": "Protocol", "what": "Reference MCP servers (filesystem, Git, fetch, memory) that any MCP client can plug in.", "stars": 91192, "std": ["mcp"], "phase": "multi-agent" },
+    { "repo": "OpenHands/OpenHands", "kind": "Coding agent", "what": "Open platform for software-engineering agents that write code, run it and browse docs in a sandbox.", "stars": 90760, "std": ["sandbox"] },
+    { "repo": "FoundationAgents/MetaGPT", "kind": "Framework", "what": "Multi-agent framework that gives agents roles like PM, architect and engineer to build software together.", "stars": 70828, "std": ["multiagent"], "phase": "multi-agent" },
+    { "repo": "openinterpreter/openinterpreter", "kind": "Coding agent", "what": "Lets an LLM run code on your own computer to get things done, with approval before each step.", "stars": 68564, "std": ["hitl", "sandbox"] },
+    { "repo": "mem0ai/mem0", "kind": "Memory", "what": "A memory layer that lets agents remember users and facts across sessions.", "stars": 67068, "std": ["state"] },
+    { "repo": "microsoft/autogen", "kind": "Framework", "what": "Microsoft's framework for agents that talk to each other to solve tasks.", "stars": 61381, "std": ["multiagent"], "phase": "multi-agent" },
+    { "repo": "crewAIInc/crewAI", "kind": "Framework", "what": "Orchestrates role-playing agents as a crew with tasks, delegation and shared goals.", "stars": 59624, "std": ["multiagent"], "phase": "multi-agent" },
+    { "repo": "FlowiseAI/Flowise", "kind": "Platform", "what": "Build AI agents visually with drag-and-drop nodes on top of LangChain.", "stars": 55499 },
+    { "repo": "run-llama/llama_index", "kind": "Framework", "what": "Connects agents to your documents: parsing, indexing and retrieval (RAG).", "stars": 52468, "std": ["state"] },
+    { "repo": "langchain-ai/langgraph", "kind": "Framework", "what": "Builds agents as graphs with persistent state, checkpoints and human-in-the-loop pauses.", "stars": 43160, "std": ["state", "hitl", "multiagent"], "phase": "multi-agent" },
+    { "repo": "agno-agi/agno", "kind": "Framework", "what": "Fast framework for building, running and managing agents and agent teams.", "stars": 42692, "std": ["multiagent"] },
+    { "repo": "openai/openai-agents-python", "kind": "Framework", "what": "OpenAI's lightweight SDK for agents, handoffs, guardrails and tracing.", "stars": 29994, "std": ["multiagent", "fcall"] },
+    { "repo": "huggingface/smolagents", "kind": "Framework", "what": "A barebones library for agents that write their actions as Python code.", "stars": 29801, "std": ["fcall"], "phase": "awaken" }
+  ]
+}

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -174,6 +174,58 @@
   .std .ours li .ph { display: block; font-family: var(--mono); font-size: 0.7rem; color: var(--muted); }
   .std .ours .gap { font-size: 0.92rem; color: var(--muted); }
 
+  /* ---------- tools & docs ---------- */
+  .filters { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 22px; }
+  .filters button { font-family: var(--mono); font-size: 0.78rem; padding: 6px 12px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface); color: var(--muted); cursor: pointer; }
+  .filters button:hover { border-color: var(--accent); color: var(--accent); }
+  .filters button[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--surface); }
+  .filters button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .tcat + .tcat { margin-top: 36px; }
+  .tcat-h { display: flex; flex-direction: column; gap: 4px; margin-bottom: 14px; max-width: 70ch; }
+  .tcat-h h3 { font-size: 1.3rem; }
+  .tcat-h p { color: var(--muted); font-size: 0.95rem; }
+  .tgrid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+  @media (max-width: 900px) { .tgrid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (max-width: 560px) { .tgrid { grid-template-columns: 1fr; } }
+  .tool { display: flex; flex-direction: column; gap: 8px; padding: 18px; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; min-width: 0; }
+  .tool .th { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; }
+  .tool h4 { font-family: var(--display); font-size: 1.08rem; margin: 0; line-height: 1.2; }
+  .tool .by { font-family: var(--mono); font-size: 0.72rem; color: var(--muted); }
+  .tool p { color: var(--muted); font-size: 0.92rem; }
+  .tool .tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: auto; padding-top: 4px; }
+  .tag { font-family: var(--mono); font-size: 0.68rem; padding: 2px 7px; border-radius: 4px; text-decoration: none; white-space: nowrap; }
+  .tag.s { color: var(--accent); background: var(--accent-soft); }
+  .tag.ph { color: var(--muted); background: var(--idle-soft); }
+  .tool .go { font-family: var(--mono); font-size: 0.8rem; text-decoration: none; white-space: nowrap; }
+  .tool .go:hover { text-decoration: underline; }
+
+  /* top-starred repos */
+  .rlist { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+  .repo { display: grid; grid-template-columns: 2.2em minmax(0, 1fr) minmax(0, 13rem); gap: 16px; align-items: center; padding: 14px 18px; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; transition: border-color .15s; }
+  .repo:hover { border-color: var(--accent); }
+  .repo .rk { font-family: var(--mono); font-size: 0.85rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+  .repo .rn { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px; }
+  .repo h4 { font-family: var(--display); font-size: 1.05rem; margin: 0; line-height: 1.25; overflow-wrap: anywhere; }
+  .repo h4 a { color: var(--fg); text-decoration: none; }
+  .repo h4 a:hover { color: var(--accent); }
+  .repo h4 .own { color: var(--muted); font-weight: 500; }
+  .repo p { color: var(--muted); font-size: 0.9rem; margin-top: 4px; }
+  .repo .tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+  .repo .st { display: flex; flex-direction: column; gap: 6px; }
+  .repo .num { font-family: var(--mono); font-size: 0.85rem; font-variant-numeric: tabular-nums; text-align: right; }
+  .repo .num b { color: var(--signal); font-weight: 500; }
+  .repo .bar { height: 6px; border-radius: 3px; background: var(--idle-soft); overflow: hidden; }
+  .repo .bar i { display: block; height: 100%; border-radius: 3px; background: var(--accent); transition: width .6s ease; }
+  .tag.k { color: var(--fg); border: 1px solid var(--line); }
+  .rnote { margin-top: 14px; font-family: var(--mono); font-size: 0.72rem; color: var(--muted); }
+  @media (max-width: 640px) {
+    .repo { grid-template-columns: 2em minmax(0, 1fr); }
+    .repo .st { grid-column: 2; }
+    .repo .num { text-align: left; }
+  }
+  .std .ours .refs { display: flex; flex-wrap: wrap; gap: 6px 12px; padding-top: 10px; border-top: 1px dashed var(--line); font-size: 0.88rem; }
+  .std .ours .refs .label { width: 100%; font-size: 0.66rem; }
+
   /* ---------- progress band ---------- */
   .band { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr); gap: 32px; align-items: center; }
   @media (max-width: 820px) { .band { grid-template-columns: 1fr; } }
@@ -196,6 +248,10 @@
   footer { border-top: 1px solid var(--line); padding-block: 28px 40px; color: var(--muted); font-size: 0.88rem; }
   footer .wrap { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
 </style>
+<link rel="stylesheet" href="viz.css">
+<link rel="stylesheet" href="fx.css">
+<script src="viz.js"></script>
+<script src="fx.js"></script>
 </head>
 <body>
 
@@ -205,6 +261,10 @@
     <nav aria-label="Sections">
       <a href="#evolution">Evolution</a>
       <a href="#standards">Standards</a>
+      <a href="#tools">Tools &amp; docs</a>
+      <a href="#repos">Top repos</a>
+      <a href="plan.html">Plan</a>
+      <a href="playground.html">Playground</a>
       <a class="cta" href="progress.html">Repo progress</a>
     </nav>
   </div>
@@ -215,7 +275,8 @@
     <div class="wrap">
       <p class="label">Agentic AI · 2026</p>
       <h1>The Evolution and Standards of <em>Agentic AI</em></h1>
-      <p class="lede">AI has shifted from a passive, prompt-response framework into an autonomous, executing force known as <strong>agentic AI</strong>. Instead of only generating text or answering questions, agentic systems use large language models as a "central nervous system" to independently plan, use tools, collaborate with other agents, and run multi-step workflows.</p>
+      <div id="voice"></div>
+      <p class="lede" style="margin-top:22px">AI has shifted from a passive, prompt-response framework into an autonomous, executing force known as <strong>agentic AI</strong>. Instead of only generating text or answering questions, agentic systems use large language models as a "central nervous system" to independently plan, use tools, collaborate with other agents, and run multi-step workflows.</p>
 
       <div class="matrix" id="matrix">
         <div class="mh">
@@ -237,31 +298,36 @@
         <p>Four eras, from rigid rules to models that plan and act. Under each one: where our repo's work sits.</p>
       </div>
 
+      <figure class="viz" style="margin:0 0 36px">
+        <div class="viz-h"><h3>Drawn to scale, 1990 to today</h3><span class="sub">Hover or tap a band or a dot for details</span></div>
+        <div id="viz-evo"><p class="viz-empty">Loading the timeline…</p></div>
+      </figure>
+
       <ol class="timeline">
         <li class="era" data-era="0">
           <span class="axis" aria-hidden="true"></span>
-          <span class="when">1990s–2010s</span>
+          <span class="when">1 · 1990s–2010s</span>
           <h3>Rule-Based Automation</h3>
           <p class="txt">Powered by rigid if-then structures, basic scripts and early Robotic Process Automation (RPA). These systems could only handle highly predictable tasks and had no real decision-making capability.</p>
           <div class="ours"></div>
         </li>
         <li class="era" data-era="1">
           <span class="axis" aria-hidden="true"></span>
-          <span class="when">2010s–2020</span>
+          <span class="when">2 · 2010s–2020</span>
           <h3>Conversational AI &amp; Early ML</h3>
           <p class="txt">Driven by intent-recognition machine learning, which gave rise to voice assistants like Siri and basic customer-service chatbots. They were context-aware but limited to answering single questions without real-world utility.</p>
           <div class="ours"></div>
         </li>
         <li class="era" data-era="2">
           <span class="axis" aria-hidden="true"></span>
-          <span class="when">2020–2023</span>
+          <span class="when">3 · 2020–2023</span>
           <h3>Generative AI</h3>
           <p class="txt">LLMs like GPT-3 and GPT-4 let machines generate new content and code and reason through logic puzzles. But it stayed System 1 thinking: reactive, prompt-dependent, with no long-term memory and no real-world read-write access.</p>
           <div class="ours"></div>
         </li>
         <li class="era now" data-era="3">
           <span class="axis" aria-hidden="true"></span>
-          <span class="when">2023–present</span>
+          <span class="when">4 · 2023–present</span>
           <h3>Agentic AI</h3>
           <p class="txt">LLMs are packaged inside cognitive loops. They take an open-ended goal, break it into a task list (planning), fetch documents (RAG), write code, call third-party APIs (tool use), review their own errors, and adjust until the goal is reached.</p>
           <div class="ours"></div>
@@ -283,6 +349,11 @@
         <h2>Current standards &amp; ecosystem</h2>
         <p>What an agentic system is expected to do in 2026. Next to each standard is what our repo does about it, pulled from the tasks in our build phases.</p>
       </div>
+
+      <figure class="viz" style="margin:0 0 40px">
+        <div class="viz-h"><h3>Where each standard gets built</h3><span class="sub">Tasks per build phase · hover a cell to see them</span></div>
+        <div id="viz-hm" style="display:flex;flex-direction:column;gap:12px"><p class="viz-empty">Loading…</p></div>
+      </figure>
 
       <div class="group">
         <div class="group-h"><span class="gn">1</span><h3>Communication &amp; tool integration protocols</h3></div>
@@ -330,6 +401,31 @@
     </div>
   </section>
 
+  <section class="block" id="tools">
+    <div class="wrap">
+      <div class="head">
+        <p class="label">Part 3</p>
+        <h2>Tools &amp; docs to build with</h2>
+        <p>The tools behind each standard, with the official docs to read. Each one is tagged with the standard it supports and the phase of our build where we'll use it.</p>
+      </div>
+      <div class="filters" id="tool-filters" role="group" aria-label="Filter tools by category"></div>
+      <div id="tool-list"><p class="label">Loading tools…</p></div>
+    </div>
+  </section>
+
+  <section class="block" id="repos">
+    <div class="wrap">
+      <div class="head">
+        <p class="label">Part 4</p>
+        <h2>Most-starred agentic AI repos</h2>
+        <p>The open-source agent projects with the most GitHub stars, ranked live. Read their code to see how the standards above are built in practice. Each one is tagged with the standard it shows best and the phase of our build where it helps.</p>
+      </div>
+      <div class="filters" id="repo-filters" role="group" aria-label="Filter repos by kind"></div>
+      <ol class="rlist" id="repo-list"><li class="label">Loading repos…</li></ol>
+      <p class="rnote" id="repo-note"></p>
+    </div>
+  </section>
+
   <section class="block">
     <div class="wrap band">
       <div>
@@ -337,6 +433,7 @@
         <h2 style="margin-top:8px">Building toward the standards</h2>
         <p>We're building every layer by hand: a neuron first, then an agent loop, then multiple agents, then the protocols and safeguards above. The full tracker has every phase, task, contribution and commit.</p>
         <a class="btn" href="progress.html">Open repo progress →</a>
+        <a class="btn" href="plan.html" style="background:none;color:var(--accent);border:1px solid var(--accent);margin-left:8px">See the execution plan →</a>
       </div>
       <div class="goals" id="goals"></div>
     </div>
@@ -408,6 +505,13 @@
       el.innerHTML = `<span class="label">Our repo</span>${pill(e.status === "todo" ? "none" : e.status, ERA_LABEL[e.status] || e.status)}${e.note ? `<span>${esc(e.note)}</span>` : ""}`;
     });
 
+    // ---- charts (viz.js loads with defer, so it's ready before this fetch resolves)
+    if (window.Viz) {
+      Viz.bindTips();
+      Viz.evolution($("viz-evo"), data.evolution || [], data.evolutionEvents || []);
+      Viz.heatmap($("viz-hm"), data);
+    }
+
     // ---- goals
     const allTasks = phases.flatMap((p) => p.tasks);
     const os = (data.openSource || {}).steps || [];
@@ -421,9 +525,145 @@
     if (data.updated) $("updated").textContent = "Progress updated " + new Date(data.updated + "T12:00:00").toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
   }
 
-  fetch("progress.json", { cache: "no-cache" })
-    .then((r) => { if (!r.ok) throw new Error(`progress.json returned ${r.status}`); return r.json(); })
-    .then(render)
+  const getJSON = (f) => fetch(f, { cache: "no-cache" }).then((r) => { if (!r.ok) throw new Error(`${f} returned ${r.status}`); return r.json(); });
+
+  function renderTools(tools, data) {
+    const names = data.standards || {};
+    const phaseName = {};
+    (data.phases || []).forEach((p, i) => (phaseName[p.id] = `Phase ${i + 1} · ${p.project !== "Not named yet" ? p.project : p.name}`));
+    const cats = tools.categories || [];
+
+    // docs links under each standard
+    document.querySelectorAll("[data-std]").forEach((el) => {
+      const k = el.dataset.std;
+      const refs = cats.flatMap((c) => c.tools).filter((t) => (t.std || []).includes(k));
+      if (refs.length) el.querySelector(".ours").insertAdjacentHTML("beforeend",
+        `<div class="refs"><span class="label">Docs to build it</span>${refs.map((t) => `<a href="${esc(t.docs)}" target="_blank" rel="noopener">${esc(t.name)} ↗</a>`).join("")}</div>`);
+    });
+
+    const card = (t) => `<article class="tool">
+        <div class="th"><h4>${esc(t.name)}</h4><a class="go" href="${esc(t.docs)}" target="_blank" rel="noopener" aria-label="${esc(t.name)} docs">Docs ↗</a></div>
+        <span class="by">${esc(t.by)}</span>
+        <p>${esc(t.what)}</p>
+        <div class="tags">${(t.std || []).map((k) => `<a class="tag s" href="#std-${esc(k)}">${esc(names[k] || k)}</a>`).join("")}${t.phase && phaseName[t.phase] ? `<a class="tag ph" href="progress.html#phases">${esc(phaseName[t.phase])}</a>` : ""}</div>
+      </article>`;
+
+    let active = "all";
+    const draw = () => {
+      $("tool-list").innerHTML = cats.filter((c) => active === "all" || c.id === active).map((c) => `<div class="tcat">
+          <div class="tcat-h"><h3>${esc(c.name)}</h3><p>${esc(c.blurb)}</p></div>
+          <div class="tgrid">${c.tools.map(card).join("")}</div>
+        </div>`).join("");
+      $("tool-filters").querySelectorAll("button").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.cat === active)));
+    };
+    const total = cats.reduce((n, c) => n + c.tools.length, 0);
+    $("tool-filters").innerHTML = [`<button type="button" data-cat="all">All · ${total}</button>`]
+      .concat(cats.map((c) => `<button type="button" data-cat="${esc(c.id)}">${esc(c.name)} · ${c.tools.length}</button>`)).join("");
+    $("tool-filters").addEventListener("click", (e) => {
+      const b = e.target.closest("button");
+      if (b) { active = b.dataset.cat; draw(); }
+    });
+    draw();
+  }
+
+  // ---- top-starred repos: list in tools.json, star counts live from GitHub (cached 6h per browser)
+  function renderRepos(tools, data) {
+    const names = data.standards || {};
+    const phaseName = {};
+    (data.phases || []).forEach((p, i) => (phaseName[p.id] = `Phase ${i + 1} · ${p.project !== "Not named yet" ? p.project : p.name}`));
+    const repos = (tools.repos || []).map((r) => ({ ...r, live: false }));
+    if (!repos.length) { $("repo-list").innerHTML = ""; return; }
+    const fmt = (n) => n >= 1000 ? (n / 1000).toFixed(n >= 100000 ? 0 : 1).replace(/\.0$/, "") + "k" : String(n);
+    const kinds = [...new Set(repos.map((r) => r.kind))];
+    let active = "all";
+
+    const row = (r, i, top) => {
+      const [own, name] = r.repo.split("/");
+      return `<li class="repo">
+        <span class="rk">${String(i + 1).padStart(2, "0")}</span>
+        <div>
+          <div class="rn"><h4><a href="https://github.com/${esc(r.repo)}" target="_blank" rel="noopener"><span class="own">${esc(own)}/</span>${esc(name)}</a></h4></div>
+          <p>${esc(r.what)}</p>
+          <div class="tags"><span class="tag k">${esc(r.kind)}</span>${(r.std || []).map((k) => `<a class="tag s" href="#std-${esc(k)}">${esc(names[k] || k)}</a>`).join("")}${r.phase && phaseName[r.phase] ? `<a class="tag ph" href="progress.html#phases">${esc(phaseName[r.phase])}</a>` : ""}</div>
+        </div>
+        <div class="st" title="${r.stars.toLocaleString()} stars${r.live ? "" : " (snapshot)"}">
+          <span class="num"><b aria-hidden="true">★</b> ${fmt(r.stars)}</span>
+          <span class="bar"><i style="width:${Math.max(2, (r.stars / top) * 100).toFixed(1)}%"></i></span>
+        </div>
+      </li>`;
+    };
+    const draw = () => {
+      repos.sort((a, b) => b.stars - a.stars);
+      const top = repos[0].stars;
+      $("repo-list").innerHTML = repos.filter((r) => active === "all" || r.kind === active).map((r) => row(r, repos.indexOf(r), top)).join("");
+      $("repo-filters").querySelectorAll("button").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.kind === active)));
+      const live = repos.filter((r) => r.live).length;
+      $("repo-note").textContent = live === repos.length ? `★ live from GitHub · ${repos.length} repos`
+        : live ? `★ live from GitHub for ${live} of ${repos.length} repos · the rest as of ${tools.repos_as_of}`
+        : `★ as of ${tools.repos_as_of} · live counts load from GitHub when available`;
+    };
+    $("repo-filters").innerHTML = [`<button type="button" data-kind="all">All · ${repos.length}</button>`]
+      .concat(kinds.map((k) => `<button type="button" data-kind="${esc(k)}">${esc(k)} · ${repos.filter((r) => r.kind === k).length}</button>`)).join("");
+    $("repo-filters").addEventListener("click", (e) => {
+      const b = e.target.closest("button");
+      if (b) { active = b.dataset.kind; draw(); }
+    });
+    draw();
+
+    const KEY = "njr-repo-stars", TTL = 6 * 3600 * 1000;
+    let cache = {};
+    try { cache = JSON.parse(localStorage.getItem(KEY)) || {}; } catch (_) {}
+    const fresh = cache.t && Date.now() - cache.t < TTL ? cache.stars || {} : null;
+    const apply = (stars) => { repos.forEach((r) => { if (stars[r.repo] > 0) { r.stars = stars[r.repo]; r.live = true; } }); draw(); };
+    if (fresh) return apply(fresh);
+    Promise.all(repos.map((r) => fetch(`https://api.github.com/repos/${r.repo}`)
+      .then((res) => res.ok ? res.json() : null).then((j) => [r.repo, j && j.stargazers_count]).catch(() => [r.repo, null])))
+      .then((pairs) => {
+        const stars = Object.fromEntries(pairs.filter((p) => p[1] > 0));
+        if (!Object.keys(stars).length) return;
+        apply(stars);
+        try { localStorage.setItem(KEY, JSON.stringify({ t: Date.now(), stars })); } catch (_) {}
+      });
+  }
+
+  if (window.FX) FX.net(document.querySelector(".hero"));
+  const voice = window.FX ? FX.voice($("voice"), { name: "njr-agent", status: " · online · reading the repo" }) : null;
+
+  // ---- the site speaks for itself (fx.js)
+  const pct = (items) => { const n = items.length || 1; return Math.round(((items.filter((t) => t.status === "done").length + items.filter((t) => t.status === "progress").length * 0.5) / n) * 100); };
+
+  async function narrate(data) {
+    if (!voice) return;
+    const tasks = (data.phases || []).flatMap((p) => p.tasks);
+    const done = tasks.filter((t) => t.status === "done").length;
+    const keys = Object.keys(data.standards || {});
+    const stdTasks = (k) => tasks.filter((t) => (t.std || []).includes(k));
+    const impl = keys.filter((k) => { const ts = stdTasks(k); return ts.length && ts.every((t) => t.status === "done"); }).length;
+    const planned = keys.filter((k) => stdTasks(k).length).length;
+    const current = (data.phases || []).find((p) => !p.tasks.every((t) => t.status === "done"));
+    let pulse = null;
+    try { pulse = await FX.repoPulse(data.repo); } catch (e) { pulse = null; }
+    voice.run([
+      { kind: "think", text: "Who am I? The living page of AI-Agentic-Modal-Collaborative, a repo NJR and SA are building. Let me check where we stand." },
+      { kind: "act", text: 'read_file("progress.json")' },
+      { kind: "observe", text: `${tasks.length} tasks across ${(data.phases || []).length} build phases · ${done} done · ${impl} of ${keys.length} agentic standards implemented, ${planned} planned.`, speech: `I can see ${tasks.length} tasks across ${(data.phases || []).length} build phases, and ${done} of them are done. Of the ${keys.length} agentic standards, ${impl} are implemented and ${planned} are planned.` },
+      { kind: "act", text: `github.commits("${data.repo}")` },
+      pulse ? { kind: "observe", text: `${pulse.total} commits · latest "${pulse.last?.msg}", ${pulse.last?.when}.`, speech: `The repo has ${pulse.total} commits. The latest one landed ${pulse.last?.when}.` }
+            : { kind: "observe", text: "GitHub didn't answer. I'll carry on with what I know.", speech: "GitHub didn't answer, so I'll carry on with what I know." },
+      { kind: "review", text: `The world is in era 4, agentic AI. We're still building toward it: ${current ? `phase ${(data.phases || []).indexOf(current) + 1}, ${current.name}, is in progress` : "every phase is done"}.` },
+      { kind: "say", text: "I track how one hand-built neuron becomes a team of agents that meets the 2026 standards. Scroll for the history and the standards, or open the playground and watch an agent think." },
+    ]);
+  }
+
+  getJSON("progress.json")
+    .then((data) => {
+      render(data);
+      narrate(data);
+      return getJSON("tools.json").then((tools) => { renderTools(tools, data); renderRepos(tools, data); }).catch((err) => {
+        $("tool-list").innerHTML = `<p class="notice">Tools didn't load (${esc(err.message)}). Check that tools.json is valid JSON.</p>`;
+        $("repo-list").innerHTML = "";
+      });
+    })
     .catch((err) => {
       $("matrix-sum").textContent = "Unavailable";
       const box = $("load-error");
