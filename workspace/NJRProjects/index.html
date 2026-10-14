@@ -217,6 +217,33 @@
   .repo .bar { height: 6px; border-radius: 3px; background: var(--idle-soft); overflow: hidden; }
   .repo .bar i { display: block; height: 100%; border-radius: 3px; background: var(--accent); transition: width .6s ease; }
   .tag.k { color: var(--fg); border: 1px solid var(--line); }
+
+  /* R&D: experiments, papers, benchmarks */
+  .rnd-sum { font-family: var(--mono); font-size: 0.8rem; color: var(--muted); margin: -8px 0 22px; }
+  .exp { display: flex; flex-direction: column; gap: 10px; padding: 18px; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; min-width: 0; }
+  .exp.done { border-left: 3px solid var(--done); }
+  .exp .pill { align-self: flex-start; }
+  .exp h4 { font-family: var(--display); font-size: 1.05rem; margin: 0; line-height: 1.3; }
+  .exp dl { margin: 0; display: grid; gap: 8px; }
+  .exp dt { font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
+  .exp dd { margin: 2px 0 0; font-size: 0.9rem; color: var(--muted); }
+  .exp dd.res { color: var(--fg); }
+  .exp .based a { font-size: 0.85rem; margin-right: 10px; }
+  .exp .tags, .bench .tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: auto; }
+  .years { display: flex; flex-direction: column; gap: 26px; }
+  .year { display: grid; grid-template-columns: 4.5rem minmax(0, 1fr); gap: 16px; }
+  .year > h4 { font-family: var(--mono); font-size: 0.95rem; color: var(--accent); margin: 0; padding-top: 14px; position: sticky; top: 70px; align-self: start; }
+  .papers { list-style: none; margin: 0; padding: 0 0 0 18px; border-left: 2px solid var(--line); display: flex; flex-direction: column; gap: 10px; }
+  .paper { position: relative; padding: 12px 16px; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; scroll-margin-top: 90px; }
+  .paper::before { content: ""; position: absolute; left: -25px; top: 19px; width: 10px; height: 10px; border-radius: 50%; background: var(--bg); border: 2px solid var(--accent); }
+  .paper:target { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+  .paper .pt { font-weight: 700; font-size: 0.98rem; line-height: 1.35; }
+  .paper .pt a { color: var(--fg); text-decoration: none; }
+  .paper .pt a:hover { color: var(--accent); }
+  .paper .pby { font-family: var(--mono); font-size: 0.72rem; color: var(--muted); margin-top: 3px; }
+  .paper p { color: var(--muted); font-size: 0.9rem; margin-top: 6px; }
+  .paper .tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+  @media (max-width: 560px) { .year { grid-template-columns: 1fr; gap: 8px; } .year > h4 { position: static; padding-top: 0; } }
   .rnote { margin-top: 14px; font-family: var(--mono); font-size: 0.72rem; color: var(--muted); }
   @media (max-width: 640px) {
     .repo { grid-template-columns: 2em minmax(0, 1fr); }
@@ -263,6 +290,7 @@
       <a href="#standards">Standards</a>
       <a href="#tools">Tools &amp; docs</a>
       <a href="#repos">Top repos</a>
+      <a href="#rnd">R&amp;D</a>
       <a href="plan.html">Plan</a>
       <a href="playground.html">Playground</a>
       <a class="cta" href="progress.html">Repo progress</a>
@@ -423,6 +451,19 @@
       <div class="filters" id="repo-filters" role="group" aria-label="Filter repos by kind"></div>
       <ol class="rlist" id="repo-list"><li class="label">Loading repos…</li></ol>
       <p class="rnote" id="repo-note"></p>
+    </div>
+  </section>
+
+  <section class="block" id="rnd">
+    <div class="wrap">
+      <div class="head">
+        <p class="label">Part 5</p>
+        <h2>R&amp;D: research and our experiments</h2>
+        <p>The questions we're testing as we build, and the research behind them. Each experiment links to the papers it builds on and to the phase where we'll run it. The benchmarks are how the field measures agents, and how we'll measure ours.</p>
+      </div>
+      <p class="rnd-sum" id="rnd-sum"></p>
+      <div class="filters" id="rnd-filters" role="group" aria-label="Filter R&amp;D"></div>
+      <div id="rnd-list"><p class="label">Loading R&amp;D…</p></div>
     </div>
   </section>
 
@@ -626,6 +667,76 @@
       });
   }
 
+  // ---- R&D: our experiments, the papers they build on, and the benchmarks (tools.json → research)
+  function renderRnd(tools, data) {
+    const r = tools.research || {};
+    const papers = (r.papers || []).slice().sort((a, b) => a.year - b.year);
+    const benches = r.benchmarks || [], exps = r.experiments || [];
+    const names = data.standards || {};
+    const phaseName = {};
+    (data.phases || []).forEach((p, i) => (phaseName[p.id] = `Phase ${i + 1} · ${p.project !== "Not named yet" ? p.project : p.name}`));
+    const tags = (x) => `${(x.std || []).map((k) => `<a class="tag s" href="#std-${esc(k)}">${esc(names[k] || k)}</a>`).join("")}${x.phase && phaseName[x.phase] ? `<a class="tag ph" href="progress.html#phases">${esc(phaseName[x.phase])}</a>` : ""}`;
+    const byId = Object.fromEntries(papers.map((p) => [p.id, p]));
+    const short = (p) => { const h = p.title.split(":")[0]; return p.title.includes(":") && h.length <= 24 ? h : `${p.by} ${p.year}`; };
+    const status = { done: ["done", "Done"], progress: ["progress", "Running"], todo: ["todo", "Planned"] };
+
+    const exp = (e) => { const [cls, label] = status[e.status] || status.todo; return `<article class="exp ${cls}">
+        <span class="pill ${cls}">${label}</span>
+        <h4>${esc(e.q)}</h4>
+        <dl>
+          <div><dt>${e.status === "done" ? "How we tested it" : "How we'll test it"}</dt><dd>${esc(e.method)}</dd></div>
+          ${e.result ? `<div><dt>Result</dt><dd class="res">${esc(e.result)}${e.link ? ` <a href="${esc(e.link)}">Open ↗</a>` : ""}</dd></div>` : ""}
+          ${(e.based || []).length ? `<div class="based"><dt>Builds on</dt><dd>${e.based.filter((id) => byId[id]).map((id) => `<a href="#p-${esc(id)}" data-paper>${esc(short(byId[id]))}</a>`).join("")}</dd></div>` : ""}
+        </dl>
+        <div class="tags">${tags(e)}</div>
+      </article>`; };
+    const paper = (p) => `<li class="paper" id="p-${esc(p.id)}">
+        <div class="pt"><a href="https://arxiv.org/abs/${esc(p.id)}" target="_blank" rel="noopener">${esc(p.title)}</a></div>
+        <div class="pby">${esc(p.by)} · ${esc(p.theme || "")} · arXiv ${esc(p.id)}</div>
+        <p>${esc(p.why)}</p>
+        <div class="tags">${tags(p)}</div>
+      </li>`;
+    const bench = (b) => `<article class="tool bench">
+        <div class="th"><h4>${esc(b.name)}</h4><a class="go" href="${esc(b.link)}" target="_blank" rel="noopener" aria-label="${esc(b.name)} site">Site ↗</a></div>
+        <span class="by">${esc(b.year)} · <a href="https://arxiv.org/abs/${esc(b.id)}" target="_blank" rel="noopener">paper</a></span>
+        <p>${esc(b.what)}</p>
+        <div class="tags">${tags(b)}</div>
+      </article>`;
+    const years = [...new Set(papers.map((p) => p.year))];
+    const groups = [
+      { id: "experiments", name: "Our experiments", blurb: "What we'll test in each phase. Status follows the same scale as the repo progress page.", n: exps.length,
+        html: () => `<div class="tgrid">${exps.map(exp).join("")}</div>` },
+      { id: "papers", name: "Research papers", blurb: "The papers that shaped agentic AI, oldest first. Read them in order to see how the ideas built on each other.", n: papers.length,
+        html: () => `<div class="years">${years.map((y) => `<div class="year"><h4>${y}</h4><ol class="papers">${papers.filter((p) => p.year === y).map(paper).join("")}</ol></div>`).join("")}</div>` },
+      { id: "benchmarks", name: "Benchmarks", blurb: "Public test sets for agents. Our evaluation harness in Phase 5 will borrow from these.", n: benches.length,
+        html: () => `<div class="tgrid">${benches.map(bench).join("")}</div>` },
+    ];
+
+    let active = "all";
+    const draw = () => {
+      $("rnd-list").innerHTML = groups.filter((g) => active === "all" || g.id === active).map((g) => `<div class="tcat">
+          <div class="tcat-h"><h3>${esc(g.name)}</h3><p>${esc(g.blurb)}</p></div>${g.html()}</div>`).join("");
+      $("rnd-filters").querySelectorAll("button").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.g === active)));
+    };
+    const done = exps.filter((e) => e.status === "done").length, running = exps.filter((e) => e.status === "progress").length;
+    $("rnd-sum").textContent = `${exps.length} experiments · ${done} done · ${running} running · ${exps.length - done - running} planned — built on ${papers.length} papers, measured against ${benches.length} benchmarks`;
+    $("rnd-filters").innerHTML = [`<button type="button" data-g="all">All</button>`]
+      .concat(groups.map((g) => `<button type="button" data-g="${g.id}">${esc(g.name)} · ${g.n}</button>`)).join("");
+    $("rnd-filters").addEventListener("click", (e) => {
+      const b = e.target.closest("button");
+      if (b) { active = b.dataset.g; draw(); }
+    });
+    // "Builds on" links jump to the paper even when the papers list is filtered out
+    $("rnd-list").addEventListener("click", (e) => {
+      const a = e.target.closest("a[data-paper]");
+      if (!a || active === "all" || active === "papers") return;
+      e.preventDefault();
+      active = "all"; draw();
+      location.hash = a.getAttribute("href");
+    });
+    draw();
+  }
+
   if (window.FX) FX.net(document.querySelector(".hero"));
   const voice = window.FX ? FX.voice($("voice"), { name: "njr-agent", status: " · online · reading the repo" }) : null;
 
@@ -659,9 +770,10 @@
     .then((data) => {
       render(data);
       narrate(data);
-      return getJSON("tools.json").then((tools) => { renderTools(tools, data); renderRepos(tools, data); }).catch((err) => {
+      return getJSON("tools.json").then((tools) => { renderTools(tools, data); renderRepos(tools, data); renderRnd(tools, data); }).catch((err) => {
         $("tool-list").innerHTML = `<p class="notice">Tools didn't load (${esc(err.message)}). Check that tools.json is valid JSON.</p>`;
         $("repo-list").innerHTML = "";
+        $("rnd-list").innerHTML = "";
       });
     })
     .catch((err) => {
