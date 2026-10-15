@@ -325,7 +325,7 @@
   <div class="wrap">
     <a class="brand" href="index.html">NJR<span>/</span>Projects</a>
     <nav aria-label="Pages and sections">
-      <a href="index.html">Standards</a>
+      <a href="index.html">Home</a>
       <a href="progress.html">Progress</a>
       <a href="plan.html">Plan</a>
       <a href="#agent">Agent loop</a>
@@ -630,7 +630,7 @@
       const s = a.out.standards.find((x) => x.id === r.std);
       remember("standard." + r.std, `${s.status} · ${s.tasks.length} tasks`);
       ev("review", "review", `${name} is ${s.status.replace("_", " ")} with ${s.tasks.length} task${s.tasks.length === 1 ? "" : "s"}. I need docs next.`);
-      const kw = { mcp: "model context protocol mcp", acp: "agent communication protocol", fcall: "tool function calling json schema", multiagent: "multi-agent", state: "memory", m2m: "oauth", sandbox: "sandbox", hitl: "human interrupts" }[r.std];
+      const kw = { mcp: "model context protocol mcp", a2a: "agent2agent a2a protocol", fcall: "tool function calling json schema", multiagent: "multi-agent", state: "memory", m2m: "oauth", sandbox: "sandbox", hitl: "human interrupts" }[r.std];
       const b = await call("search_docs", { query: kw, limit: 3 });
       remember("docs." + r.std, b.out.results.map((x) => x.name).join(", ") || "none");
       const phaseName = s.tasks[0]?.phase.split(" · ")[1];

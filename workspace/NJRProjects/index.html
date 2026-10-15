@@ -218,6 +218,44 @@
   .repo .bar i { display: block; height: 100%; border-radius: 3px; background: var(--accent); transition: width .6s ease; }
   .tag.k { color: var(--fg); border: 1px solid var(--line); }
 
+  /* four pillars: hero map + a header band opening each pillar */
+  .pillars { margin-top: 30px; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
+  @media (max-width: 900px) { .pillars { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (max-width: 480px) { .pillars { grid-template-columns: 1fr; } }
+  .pcard { display: flex; flex-direction: column; gap: 6px; padding: 14px 16px; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; color: var(--fg); text-decoration: none; min-width: 0; transition: border-color .15s; }
+  .pcard:hover { border-color: var(--accent); }
+  .pcard .pn { font-family: var(--display); font-weight: 800; font-size: 1.5rem; color: var(--accent); line-height: 1; }
+  .pcard strong { font-family: var(--display); font-size: 1.05rem; line-height: 1.2; }
+  .pcard span:last-child { font-family: var(--mono); font-size: 0.7rem; color: var(--muted); line-height: 1.5; }
+  section.pillar { padding-block: 44px 8px; border-top: 2px solid var(--accent); background: linear-gradient(var(--accent-soft), transparent 85%); }
+  section.pillar .head { margin-bottom: 0; }
+  section.pillar h2 { font-size: clamp(2rem, 4.6vw, 3rem); letter-spacing: -0.03em; }
+  section.pillar + section.block { border-top: none; }
+  .subnav { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+  .subnav a { font-family: var(--mono); font-size: 0.75rem; padding: 4px 10px; border-radius: 999px; border: 1px solid var(--accent); text-decoration: none; }
+  .subnav a:hover { background: var(--accent); color: var(--surface); }
+
+  /* 2.1 landscape */
+  .land .sys { font-size: 0.85rem; color: var(--fg); }
+  .land .sys b { font-family: var(--mono); font-size: 0.66rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); font-weight: 500; margin-right: 6px; }
+  .land .note, .repo .note { font-size: 0.82rem; color: var(--muted); padding-left: 10px; border-left: 2px solid var(--signal); }
+  .tag.fw { color: var(--signal); border: 1px solid var(--signal); }
+
+  /* 3.1 contribution row under each repo */
+  .repo .contrib { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 14px; margin-top: 10px; padding-top: 10px; border-top: 1px dashed var(--line); font-size: 0.85rem; }
+  .act { font-family: var(--mono); font-size: 0.7rem; padding: 2px 8px; border-radius: 999px; white-space: nowrap; }
+  .act.a4 { color: var(--done); background: var(--done-soft); }
+  .act.a3 { color: var(--progress); background: var(--progress-soft); }
+  .act.a2 { color: var(--accent); background: var(--accent-soft); }
+  .act.a1 { color: var(--idle); background: var(--idle-soft); }
+  .repo .contrib .push { font-family: var(--mono); font-size: 0.7rem; color: var(--muted); }
+  .start { margin: 0 0 26px; padding: 16px 20px; border-radius: 10px; background: var(--accent-soft); display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; list-style: none; counter-reset: s; }
+  .start li { counter-increment: s; font-size: 0.92rem; }
+  .start li::before { content: counter(s); display: block; font-family: var(--display); font-weight: 800; color: var(--accent); font-size: 1.3rem; }
+  @media (max-width: 720px) { .start { grid-template-columns: 1fr; } }
+  .std.note { border-style: dashed; }
+  .std.note .ours a { font-size: 0.88rem; }
+
   /* R&D: experiments, papers, benchmarks */
   .rnd-sum { font-family: var(--mono); font-size: 0.8rem; color: var(--muted); margin: -8px 0 22px; }
   .exp { display: flex; flex-direction: column; gap: 10px; padding: 18px; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; min-width: 0; }
@@ -286,11 +324,10 @@
   <div class="wrap">
     <a class="brand" href="#top">NJR<span>/</span>Projects</a>
     <nav aria-label="Sections">
-      <a href="#evolution">Evolution</a>
-      <a href="#standards">Standards</a>
-      <a href="#tools">Tools &amp; docs</a>
-      <a href="#repos">Top repos</a>
-      <a href="#rnd">R&amp;D</a>
+      <a href="#pillar-1">What it is</a>
+      <a href="#pillar-2">Landscape</a>
+      <a href="#pillar-3">Contribute</a>
+      <a href="#pillar-4">Our repo</a>
       <a href="plan.html">Plan</a>
       <a href="playground.html">Playground</a>
       <a class="cta" href="progress.html">Repo progress</a>
@@ -306,6 +343,13 @@
       <div id="voice"></div>
       <p class="lede" style="margin-top:22px">AI has shifted from a passive, prompt-response framework into an autonomous, executing force known as <strong>agentic AI</strong>. Instead of only generating text or answering questions, agentic systems use large language models as a "central nervous system" to independently plan, use tools, collaborate with other agents, and run multi-step workflows.</p>
 
+      <nav class="pillars" aria-label="The four pillars of this site">
+        <a class="pcard" href="#pillar-1"><span class="pn">1</span><strong>What agentic AI is</strong><span>Evolution · Standards · Tools &amp; docs</span></a>
+        <a class="pcard" href="#pillar-2"><span class="pn">2</span><strong>Agents in the wild</strong><span>Projects &amp; products by type of agent system</span></a>
+        <a class="pcard" href="#pillar-3"><span class="pn">3</span><strong>Open source to contribute to</strong><span>Activity · Good first issues · Contributing guides</span></a>
+        <a class="pcard" href="#pillar-4"><span class="pn">4</span><strong>This repo's status</strong><span>Progress · R&amp;D</span></a>
+      </nav>
+
       <div class="matrix" id="matrix">
         <div class="mh">
           <h3>Our repo against the 2026 standards</h3>
@@ -318,10 +362,21 @@
     </div>
   </section>
 
+  <section class="block pillar" id="pillar-1">
+    <div class="wrap">
+      <div class="head">
+        <p class="label">Pillar 1 of 4</p>
+        <h2>What agentic AI is</h2>
+        <p>Where agents came from, the standards that define a good one in 2026, and the tools and docs that implement those standards.</p>
+      </div>
+      <nav class="subnav" aria-label="In pillar 1"><a href="#evolution">1.1 Evolution</a><a href="#standards">1.2 Standards</a><a href="#tools">1.3 Tools &amp; docs</a></nav>
+    </div>
+  </section>
+
   <section class="block" id="evolution">
     <div class="wrap">
       <div class="head">
-        <p class="label">Part 1</p>
+        <p class="label">1.1 · Evolution</p>
         <h2>The evolution of agentic AI</h2>
         <p>Four eras, from rigid rules to models that plan and act. Under each one: where our repo's work sits.</p>
       </div>
@@ -373,7 +428,7 @@
   <section class="block" id="standards">
     <div class="wrap">
       <div class="head">
-        <p class="label">Part 2</p>
+        <p class="label">1.2 · Standards</p>
         <h2>Current standards &amp; ecosystem</h2>
         <p>What an agentic system is expected to do in 2026. Next to each standard is what our repo does about it, pulled from the tasks in our build phases.</p>
       </div>
@@ -386,12 +441,22 @@
       <div class="group">
         <div class="group-h"><span class="gn">1</span><h3>Communication &amp; tool integration protocols</h3></div>
         <article class="std" id="std-mcp" data-std="mcp">
-          <div class="what"><h4>Model Context Protocol (MCP)</h4><span class="by">Pioneered by Anthropic</span><p>An open, plug-and-play architecture that lets LLMs safely read data from local files, connect to databases, and invoke software environments in a uniform way.</p></div>
+          <div class="what"><h4>Model Context Protocol (MCP)</h4><span class="by">Created by Anthropic (Nov 2024) · in the Linux Foundation's Agentic AI Foundation since Dec 2025</span><p>An open, plug-and-play architecture that lets LLMs safely read data from local files, connect to databases, and invoke software environments in a uniform way. MCP connects an agent to its tools and data.</p></div>
           <div class="ours"></div>
         </article>
-        <article class="std" id="std-acp" data-std="acp">
-          <div class="what"><h4>Agent Communication Protocol (ACP) &amp; AGP</h4><span class="by">Promoted by IBM and the Linux Foundation</span><p>REST- and gRPC-based enterprise protocols for how multi-agent swarms orchestrate data, signal one another, and transfer tasks across secure architectures.</p></div>
+        <article class="std" id="std-a2a" data-std="a2a">
+          <div class="what"><h4>Agent2Agent Protocol (A2A)</h4><span class="by">Created by Google (Apr 2025) · a Linux Foundation project since Jun 2025</span><p>The standard for agents talking to other agents. Each agent publishes an Agent Card that describes its skills; other agents find it and hand it tasks over HTTP and JSON-RPC, with streamed updates for long jobs, whatever framework each side is built on. MCP connects an agent to tools; A2A connects agents to each other.</p></div>
           <div class="ours"></div>
+        </article>
+        <article class="std note" id="std-acp">
+          <div class="what"><h4>What happened to ACP and AGP?</h4><span class="by">Checked October 2026</span><p><strong>ACP</strong> (Agent Communication Protocol), started by IBM's BeeAI team, merged into A2A under the Linux Foundation in August 2025. Its repo is archived and IBM published a migration guide.</p><p><strong>AGP</strong> (Agent Gateway Protocol) came from Cisco's AGNTCY project, not IBM. It has been renamed <strong>SLIM</strong>, a secure messaging layer that can carry A2A and MCP traffic. AGNTCY is now a Linux Foundation project too.</p><p>Watch the name clash: "ACP" today often means Zed's Agent Client Protocol, which connects coding agents to code editors.</p></div>
+          <div class="ours">
+            <span class="label">Sources</span>
+            <a href="https://research.ibm.com/projects/agent-communication-protocol" target="_blank" rel="noopener">IBM Research: ACP is now part of A2A ↗</a>
+            <a href="https://github.com/i-am-bee/beeai-platform/blob/main/docs/community-and-support/acp-a2a-migration-guide.mdx" target="_blank" rel="noopener">ACP → A2A migration guide ↗</a>
+            <a href="https://www.linuxfoundation.org/press/linux-foundation-launches-the-agent2agent-protocol-project-to-enable-secure-intelligent-communication-between-ai-agents" target="_blank" rel="noopener">Linux Foundation launches the A2A project ↗</a>
+            <a href="https://github.com/agntcy/slim" target="_blank" rel="noopener">AGNTCY SLIM (formerly AGP) ↗</a>
+          </div>
         </article>
         <article class="std" id="std-fcall" data-std="fcall">
           <div class="what"><h4>Function calling protocols</h4><span class="by">Formalized by OpenAI and the community</span><p>Predictable schema formats, like JSON, so agents don't hallucinate arguments when they trigger code execution.</p></div>
@@ -432,7 +497,7 @@
   <section class="block" id="tools">
     <div class="wrap">
       <div class="head">
-        <p class="label">Part 3</p>
+        <p class="label">1.3 · Tools &amp; docs</p>
         <h2>Tools &amp; docs to build with</h2>
         <p>The tools behind each standard, with the official docs to read. Each one is tagged with the standard it supports and the phase of our build where we'll use it.</p>
       </div>
@@ -441,23 +506,88 @@
     </div>
   </section>
 
+  <section class="block pillar" id="pillar-2">
+    <div class="wrap">
+      <div class="head">
+        <p class="label">Pillar 2 of 4</p>
+        <h2>Agents in the wild</h2>
+        <p>The agent projects and products people actually use, grouped by the kind of agent system each one is. Use it to see which patterns from Pillar 1 have reached production.</p>
+      </div>
+      <nav class="subnav" aria-label="In pillar 2"><a href="#landscape">2.1 Projects &amp; products</a></nav>
+    </div>
+  </section>
+
+  <section class="block" id="landscape">
+    <div class="wrap">
+      <div class="head">
+        <p class="label">2.1 · Projects &amp; products</p>
+        <h2>Agent systems, by type</h2>
+        <p>What each one does and which category of agent system it represents. Open-source ones link to Pillar 3, where you can contribute to them. Status changes, like a product folded into another, are noted on the card.</p>
+      </div>
+      <div class="filters" id="land-filters" role="group" aria-label="Filter by type of agent system"></div>
+      <div id="land-list"><p class="label">Loading projects…</p></div>
+      <p class="rnote" id="land-note"></p>
+    </div>
+  </section>
+
+  <section class="block pillar" id="pillar-3">
+    <div class="wrap">
+      <div class="head">
+        <p class="label">Pillar 3 of 4</p>
+        <h2>Open source to contribute to</h2>
+        <p>The most-starred open-source agent projects, with what you need to start contributing: how active each one is, its good-first-issue list, and its contributing guide.</p>
+      </div>
+      <nav class="subnav" aria-label="In pillar 3"><a href="#repos">3.1 Projects to contribute to</a></nav>
+    </div>
+  </section>
+
   <section class="block" id="repos">
     <div class="wrap">
       <div class="head">
-        <p class="label">Part 4</p>
-        <h2>Most-starred agentic AI repos</h2>
-        <p>The open-source agent projects with the most GitHub stars, ranked live. Read their code to see how the standards above are built in practice. Each one is tagged with the standard it shows best and the phase of our build where it helps.</p>
+        <p class="label">3.1 · Projects to contribute to</p>
+        <h2>Open-source agent projects</h2>
+        <p>Ranked by GitHub stars, or sort by activity or by open beginner issues (each repo's own "good first issue" or "help wanted" label). Activity and issue counts are a snapshot; stars and last push load live from GitHub. Each one is tagged with the standard it shows best and the phase of our build where reading its code helps.</p>
       </div>
+      <ol class="start">
+        <li>Pick a project whose kind matches what you're building, and check that it's active.</li>
+        <li>Read its contributing guide and get it running locally before you touch an issue.</li>
+        <li>Start with a good first issue or a docs fix. Comment on the issue before you open a pull request.</li>
+      </ol>
+      <div class="filters" id="repo-sort" role="group" aria-label="Sort projects"></div>
       <div class="filters" id="repo-filters" role="group" aria-label="Filter repos by kind"></div>
       <ol class="rlist" id="repo-list"><li class="label">Loading repos…</li></ol>
       <p class="rnote" id="repo-note"></p>
     </div>
   </section>
 
+  <section class="block pillar" id="pillar-4">
+    <div class="wrap">
+      <div class="head">
+        <p class="label">Pillar 4 of 4</p>
+        <h2>This repo's status</h2>
+        <p>What NJR and SA have built so far, measured against the standards in Pillar 1, and the experiments we're running along the way. The full tracker is the Repo progress page.</p>
+      </div>
+      <nav class="subnav" aria-label="In pillar 4"><a href="#status">4.1 Status</a><a href="#rnd">4.2 R&amp;D</a><a href="#progress.html">Repo progress page →</a></nav>
+    </div>
+  </section>
+
+  <section class="block" id="status">
+    <div class="wrap band">
+      <div>
+        <p class="label">4.1 · Status</p>
+        <h2 style="margin-top:8px">Building toward the standards</h2>
+        <p>We're building every layer by hand: a neuron first, then an agent loop, then multiple agents, then the protocols and safeguards above. The full tracker has every phase, task, contribution and commit.</p>
+        <a class="btn" href="progress.html">Open repo progress →</a>
+        <a class="btn" href="plan.html" style="background:none;color:var(--accent);border:1px solid var(--accent);margin-left:8px">See the execution plan →</a>
+      </div>
+      <div class="goals" id="goals"></div>
+    </div>
+  </section>
+
   <section class="block" id="rnd">
     <div class="wrap">
       <div class="head">
-        <p class="label">Part 5</p>
+        <p class="label">4.2 · R&amp;D</p>
         <h2>R&amp;D: research and our experiments</h2>
         <p>The questions we're testing as we build, and the research behind them. Each experiment links to the papers it builds on and to the phase where we'll run it. The benchmarks are how the field measures agents, and how we'll measure ours.</p>
       </div>
@@ -467,18 +597,6 @@
     </div>
   </section>
 
-  <section class="block">
-    <div class="wrap band">
-      <div>
-        <p class="label">Our repo</p>
-        <h2 style="margin-top:8px">Building toward the standards</h2>
-        <p>We're building every layer by hand: a neuron first, then an agent loop, then multiple agents, then the protocols and safeguards above. The full tracker has every phase, task, contribution and commit.</p>
-        <a class="btn" href="progress.html">Open repo progress →</a>
-        <a class="btn" href="plan.html" style="background:none;color:var(--accent);border:1px solid var(--accent);margin-left:8px">See the execution plan →</a>
-      </div>
-      <div class="goals" id="goals"></div>
-    </div>
-  </section>
 </main>
 
 <footer>
@@ -616,7 +734,23 @@
     if (!repos.length) { $("repo-list").innerHTML = ""; return; }
     const fmt = (n) => n >= 1000 ? (n / 1000).toFixed(n >= 100000 ? 0 : 1).replace(/\.0$/, "") + "k" : String(n);
     const kinds = [...new Set(repos.map((r) => r.kind))];
-    let active = "all";
+    let active = "all", sort = "stars";
+    // activity level from commits on the default branch in the 30 days before contrib_as_of
+    const ACT = [[500, "a4", "Very active"], [100, "a3", "Active"], [20, "a2", "Steady"], [0, "a1", "Quiet"]];
+    const act = (r) => ACT.find(([n]) => (r.commits30 || 0) >= n);
+    const ago = (iso) => { const d = Math.floor((Date.now() - new Date(iso)) / 864e5); return d <= 0 ? "today" : d === 1 ? "yesterday" : `${d} days ago`; };
+    const contrib = (r) => {
+      const [, cls, label] = act(r);
+      const q = r.label ? `https://github.com/${r.repo}/issues?q=${encodeURIComponent(`is:issue is:open label:"${r.label}"`)}` : `https://github.com/${r.repo}/issues`;
+      // repos name their beginner label differently ("good first issue", "help wanted"); show the repo's own label
+      const gfi = r.label ? `${r.gfi || 0} open · “${r.label}” ↗` : "No beginner label · browse open issues ↗";
+      return `<div class="contrib">
+          ${r.archived ? `<span class="act a1">Archived · read-only</span>` : `<span class="act ${cls}" title="${(r.commits30 || 0).toLocaleString()} commits in the 30 days before ${esc(tools.contrib_as_of)}">${label} · ${(r.commits30 || 0).toLocaleString()} commits / 30d</span>
+          <a href="${esc(q)}" target="_blank" rel="noopener">${esc(gfi)}</a>`}
+          ${r.contrib ? `<a href="${esc(r.contrib)}" target="_blank" rel="noopener">Contributing guide ↗</a>` : ""}
+          ${r.pushed ? `<span class="push">last push ${ago(r.pushed)}</span>` : ""}
+        </div>${r.note ? `<p class="note" style="margin-top:8px">${esc(r.note)}</p>` : ""}`;
+    };
 
     const row = (r, i, top) => {
       const [own, name] = r.repo.split("/");
@@ -626,6 +760,7 @@
           <div class="rn"><h4><a href="https://github.com/${esc(r.repo)}" target="_blank" rel="noopener"><span class="own">${esc(own)}/</span>${esc(name)}</a></h4></div>
           <p>${esc(r.what)}</p>
           <div class="tags"><span class="tag k">${esc(r.kind)}</span>${(r.std || []).map((k) => `<a class="tag s" href="#std-${esc(k)}">${esc(names[k] || k)}</a>`).join("")}${r.phase && phaseName[r.phase] ? `<a class="tag ph" href="progress.html#phases">${esc(phaseName[r.phase])}</a>` : ""}</div>
+          ${contrib(r)}
         </div>
         <div class="st" title="${r.stars.toLocaleString()} stars${r.live ? "" : " (snapshot)"}">
           <span class="num"><b aria-hidden="true">★</b> ${fmt(r.stars)}</span>
@@ -634,14 +769,17 @@
       </li>`;
     };
     const draw = () => {
-      repos.sort((a, b) => b.stars - a.stars);
-      const top = repos[0].stars;
+      const key = { stars: (r) => r.stars, active: (r) => r.archived ? -1 : r.commits30 || 0, gfi: (r) => r.archived ? -1 : r.gfi || 0 }[sort];
+      repos.sort((a, b) => key(b) - key(a) || b.stars - a.stars);
+      const top = Math.max(...repos.map((r) => r.stars));
       $("repo-list").innerHTML = repos.filter((r) => active === "all" || r.kind === active).map((r) => row(r, repos.indexOf(r), top)).join("");
       $("repo-filters").querySelectorAll("button").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.kind === active)));
+      $("repo-sort").querySelectorAll("button").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.sort === sort)));
       const live = repos.filter((r) => r.live).length;
       $("repo-note").textContent = live === repos.length ? `★ live from GitHub · ${repos.length} repos`
         : live ? `★ live from GitHub for ${live} of ${repos.length} repos · the rest as of ${tools.repos_as_of}`
         : `★ as of ${tools.repos_as_of} · live counts load from GitHub when available`;
+      $("repo-note").textContent += ` · activity and issue counts as of ${tools.contrib_as_of}`;
     };
     $("repo-filters").innerHTML = [`<button type="button" data-kind="all">All · ${repos.length}</button>`]
       .concat(kinds.map((k) => `<button type="button" data-kind="${esc(k)}">${esc(k)} · ${repos.filter((r) => r.kind === k).length}</button>`)).join("");
@@ -649,22 +787,63 @@
       const b = e.target.closest("button");
       if (b) { active = b.dataset.kind; draw(); }
     });
+    $("repo-sort").innerHTML = [["stars", "Sort: most stars"], ["active", "Most active"], ["gfi", "Most beginner issues"]]
+      .map(([k, t]) => `<button type="button" data-sort="${k}">${t}</button>`).join("");
+    $("repo-sort").addEventListener("click", (e) => {
+      const b = e.target.closest("button");
+      if (b) { sort = b.dataset.sort; draw(); }
+    });
     draw();
 
-    const KEY = "njr-repo-stars", TTL = 6 * 3600 * 1000;
+    const KEY = "njr-repo-stars-v2", TTL = 6 * 3600 * 1000;
     let cache = {};
     try { cache = JSON.parse(localStorage.getItem(KEY)) || {}; } catch (_) {}
     const fresh = cache.t && Date.now() - cache.t < TTL ? cache.stars || {} : null;
-    const apply = (stars) => { repos.forEach((r) => { if (stars[r.repo] > 0) { r.stars = stars[r.repo]; r.live = true; } }); draw(); };
-    if (fresh) return apply(fresh);
+    const apply = (stars, pushed = {}) => { repos.forEach((r) => { if (stars[r.repo] > 0) { r.stars = stars[r.repo]; r.live = true; } if (pushed[r.repo]) r.pushed = pushed[r.repo]; }); draw(); };
+    if (fresh) return apply(fresh, cache.pushed || {});
     Promise.all(repos.map((r) => fetch(`https://api.github.com/repos/${r.repo}`)
-      .then((res) => res.ok ? res.json() : null).then((j) => [r.repo, j && j.stargazers_count]).catch(() => [r.repo, null])))
-      .then((pairs) => {
-        const stars = Object.fromEntries(pairs.filter((p) => p[1] > 0));
-        if (!Object.keys(stars).length) return;
-        apply(stars);
-        try { localStorage.setItem(KEY, JSON.stringify({ t: Date.now(), stars })); } catch (_) {}
+      .then((res) => res.ok ? res.json() : null).then((j) => [r.repo, j && j.stargazers_count, j && j.pushed_at]).catch(() => [r.repo, null, null])))
+      .then((rows) => {
+        const ok = rows.filter((p) => p[1] > 0);
+        const stars = Object.fromEntries(ok.map((p) => [p[0], p[1]])), pushed = Object.fromEntries(ok.map((p) => [p[0], p[2]]));
+        if (!ok.length) return;
+        apply(stars, pushed);
+        try { localStorage.setItem(KEY, JSON.stringify({ t: Date.now(), stars, pushed })); } catch (_) {}
       });
+  }
+
+  // ---- 2.1 landscape: projects & products grouped by type of agent system (tools.json → landscape)
+  function renderLandscape(tools, data) {
+    const L = tools.landscape || {}, cats = L.categories || [], items = L.items || [];
+    const names = data.standards || {};
+    const inRepos = new Set((tools.repos || []).map((r) => r.repo));
+    const card = (x) => `<article class="tool land">
+        <div class="th"><h4>${esc(x.name)}</h4><a class="go" href="${esc(x.link)}" target="_blank" rel="noopener" aria-label="${esc(x.name)} link">Link ↗</a></div>
+        <span class="by">${esc(x.by)}${x.year ? ` · ${x.year}` : ""}</span>
+        <p>${esc(x.what)}</p>
+        <p class="sys"><b>System</b>${esc(x.system)}</p>
+        ${x.note ? `<p class="note">${esc(x.note)}</p>` : ""}
+        <div class="tags">${x.built ? `<span class="tag fw">Built on ${esc(x.built)}</span>` : ""}${x.oss && inRepos.has(x.oss) ? `<a class="tag k" href="#repos" data-oss="${esc(x.oss)}">Open source · contribute</a>` : ""}${(x.std || []).map((k) => `<a class="tag s" href="#std-${esc(k)}">${esc(names[k] || k)}</a>`).join("")}</div>
+      </article>`;
+    let active = "all";
+    const pick = (c) => items.filter((x) => x.cat === c.id && (active === "all" || active === c.id || (active.startsWith("fw:") && x.built === active.slice(3))));
+    const draw = () => {
+      $("land-list").innerHTML = cats.map((c) => [c, pick(c)]).filter(([, xs]) => xs.length).map(([c, xs]) => `<div class="tcat">
+          <div class="tcat-h"><h3>${esc(c.name)}</h3><p>${esc(c.blurb)}</p></div>
+          <div class="tgrid">${xs.map(card).join("")}</div>
+        </div>`).join("");
+      $("land-filters").querySelectorAll("button").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.f === active)));
+    };
+    const fws = [...new Set(items.map((x) => x.built).filter(Boolean))];
+    $("land-filters").innerHTML = [`<button type="button" data-f="all">All · ${items.length}</button>`]
+      .concat(cats.map((c) => `<button type="button" data-f="${esc(c.id)}">${esc(c.name)} · ${items.filter((x) => x.cat === c.id).length}</button>`))
+      .concat(fws.map((f) => `<button type="button" data-f="fw:${esc(f)}">Built on ${esc(f)} · ${items.filter((x) => x.built === f).length}</button>`)).join("");
+    $("land-filters").addEventListener("click", (e) => {
+      const b = e.target.closest("button");
+      if (b) { active = b.dataset.f; draw(); }
+    });
+    $("land-note").textContent = `Checked ${L.as_of || ""}. LangGraph users are as named by LangChain; product details change fast, so follow each link for the current state.`;
+    draw();
   }
 
   // ---- R&D: our experiments, the papers they build on, and the benchmarks (tools.json → research)
@@ -762,7 +941,7 @@
       pulse ? { kind: "observe", text: `${pulse.total} commits · latest "${pulse.last?.msg}", ${pulse.last?.when}.`, speech: `The repo has ${pulse.total} commits. The latest one landed ${pulse.last?.when}.` }
             : { kind: "observe", text: "GitHub didn't answer. I'll carry on with what I know.", speech: "GitHub didn't answer, so I'll carry on with what I know." },
       { kind: "review", text: `The world is in era 4, agentic AI. We're still building toward it: ${current ? `phase ${(data.phases || []).indexOf(current) + 1}, ${current.name}, is in progress` : "every phase is done"}.` },
-      { kind: "say", text: "I track how one hand-built neuron becomes a team of agents that meets the 2026 standards. Scroll for the history and the standards, or open the playground and watch an agent think." },
+      { kind: "say", text: "I track how one hand-built neuron becomes a team of agents that meets the 2026 standards. Scroll through four pillars: what agentic AI is, agents in the wild, open source you can contribute to, and where our repo stands. Or open the playground and watch an agent think." },
     ]);
   }
 
@@ -770,10 +949,11 @@
     .then((data) => {
       render(data);
       narrate(data);
-      return getJSON("tools.json").then((tools) => { renderTools(tools, data); renderRepos(tools, data); renderRnd(tools, data); }).catch((err) => {
+      return getJSON("tools.json").then((tools) => { renderTools(tools, data); renderLandscape(tools, data); renderRepos(tools, data); renderRnd(tools, data); }).catch((err) => {
         $("tool-list").innerHTML = `<p class="notice">Tools didn't load (${esc(err.message)}). Check that tools.json is valid JSON.</p>`;
         $("repo-list").innerHTML = "";
         $("rnd-list").innerHTML = "";
+        $("land-list").innerHTML = "";
       });
     })
     .catch((err) => {

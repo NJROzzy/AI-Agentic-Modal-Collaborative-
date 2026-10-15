@@ -5,7 +5,7 @@
   "_std_values": "Tag a task with the standards it implements. Keys must match the 'standards' list below.",
   "standards": {
     "mcp": "Model Context Protocol",
-    "acp": "ACP & AGP",
+    "a2a": "Agent2Agent (A2A)",
     "fcall": "Function calling",
     "multiagent": "Multi-agent frameworks",
     "state": "State management",
@@ -170,10 +170,10 @@
           ]
         },
         {
-          "title": "Agent-to-agent messaging over ACP",
+          "title": "Agent-to-agent messaging over A2A",
           "status": "todo",
           "std": [
-            "acp"
+            "a2a"
           ]
         },
         {
@@ -305,7 +305,17 @@
     {
       "date": "2025-04",
       "label": "A2A",
-      "text": "Google announces the Agent2Agent (A2A) protocol."
+      "text": "Google announces the Agent2Agent (A2A) protocol; it moves to the Linux Foundation in June 2025."
+    },
+    {
+      "date": "2025-08",
+      "label": "ACP → A2A",
+      "text": "IBM's Agent Communication Protocol (ACP) merges into A2A under the Linux Foundation."
+    },
+    {
+      "date": "2025-12",
+      "label": "MCP → AAIF",
+      "text": "Anthropic donates MCP to the Linux Foundation's new Agentic AI Foundation."
     },
     {
       "date": "2026-09",
@@ -525,7 +535,7 @@
             "title": "Rebuild the same flow in LangGraph and compare code size and reliability"
           },
           {
-            "title": "Agent-to-agent messaging over ACP or A2A"
+            "title": "Agent-to-agent messaging over A2A (ACP merged into it)"
           },
           {
             "title": "Joint demo with SA",
